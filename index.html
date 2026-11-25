@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aliados Haceb · Piloto</title>
+<title>Aliados Haceb · Piloto para técnicos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -166,8 +166,12 @@ textarea.csv { width: 100%; height: 120px; font-family: monospace; font-size: 12
 <header class="top">
   <div class="top-in">
     <div class="wordmark">Aliados <span>Haceb</span></div>
-    <div class="demo-note" id="note"></div>
-    <nav class="tabs" id="nav" role="tablist" aria-label="Vistas"></nav>
+    <div class="demo-note">Piloto con datos ficticios. Lo que escribas queda solo en esta página y no se envía a ningún sitio. Las cédulas de prueba no son de personas reales.</div>
+    <nav class="tabs" role="tablist" aria-label="Vistas del prototipo">
+      <button role="tab" id="tab-registro" aria-selected="true" aria-controls="panel" data-tab="registro">Registro del técnico</button>
+      <button role="tab" id="tab-consulta" aria-selected="false" aria-controls="panel" data-tab="consulta">Consultar mi nivel</button>
+      <button role="tab" id="tab-escalera" aria-selected="false" aria-controls="panel" data-tab="escalera">Escalera VIP</button>
+    </nav>
   </div>
 </header>
 <main id="panel" role="tabpanel"></main>
@@ -248,7 +252,7 @@ textarea.csv { width: 100%; height: 120px; font-family: monospace; font-size: 12
       experiencia: "", frecuencia: "", distribuidor: "", dolores: [], temas: [], formato: "", horario: "",
       consentDatos: false, consentWhatsapp: false, consentDirectorio: false, cedula: "" };
   }
-  var S = { mode: (location.hash === "#interno" ? "int" : "cli"), seg: "todos", q: { ced: "", ok: false, res: null, err: "" }, tab: (location.hash === "#interno" ? "panel" : "registro"), step: 0, d: blank(), errors: {}, records: seed.slice(), last: null, csv: false };
+  var S = { q: { ced: "", ok: false, res: null, err: "" }, tab: "registro", step: 0, d: blank(), errors: {}, records: seed.slice(), last: null, csv: false };
   var TOTAL = 5;
 
   /* ---------- Utilidades ---------- */
@@ -437,7 +441,7 @@ textarea.csv { width: 100%; height: 120px; font-family: monospace; font-size: 12
     { n: 1, t: "Registrado", c: "Completa el registro y autoriza el tratamiento de sus datos.", r: "Serie de inicio, primeras microcápsulas y biblioteca técnica." },
     { n: 2, t: "Aliado", c: "Segunda compra en 60 días, dos trimestres seguidos, con autorización vigente.", r: "Contenido de su serie, boletín mensual y aviso de continuidad (condiciones por definir y publicar)." },
     { n: 3, t: "Certificado", c: "Aprueba la Ruta Especialista [contenido y duración por confirmar con capacitación].", r: "Sello de Certificado, ficha en el directorio (si lo autoriza) y contenido avanzado." },
-    { n: 4, t: "Aliado VIP", c: "Nivel Certificado más continuidad sostenida y autorización vigente.", r: "Beneficios por confirmar con Cavatec: solo se anuncia lo que la operación pueda cumplir.", top: true }
+    { n: 4, t: "Aliado VIP", c: "Nivel Certificado más continuidad sostenida y autorización vigente.", r: "Beneficios por confirmar con Haceb: solo se anuncia lo que la operación pueda cumplir.", top: true }
   ];
   function viewEscalera() {
     var li = NIVELES.map(function (x) {
@@ -446,7 +450,7 @@ textarea.csv { width: 100%; height: 120px; font-family: monospace; font-size: 12
     }).join("");
     return '<div class="section"><h2>Tu escalera a Aliado VIP</h2><p>Todos los segmentos caminan hacia el mismo destino. Se sube por trayectoria, no por una compra grande.</p></div>' +
       '<ol class="ladder">' + li + '</ol>' +
-      '<div class="notice warn">Técnicos de cadena: no suben por compras, porque su cadena compra por ellos. Su camino es certificación y soporte técnico, sin puntos ni bonos. Por validar con Cavatec.</div>';
+      '<div class="notice warn">Técnicos de cadena: no suben por compras, porque su cadena compra por ellos. Su camino es certificación y soporte técnico, sin puntos ni bonos. Por validar con Haceb.</div>';
   }
   function pill(v) { return '<span class="pill ' + (v ? "yes" : "no") + '">' + (v ? "Sí" : "No") + '</span>'; }
 
@@ -461,160 +465,14 @@ textarea.csv { width: 100%; height: 120px; font-family: monospace; font-size: 12
     return h + '</div>';
   }
 
-  var QR_URL = "https://claude.ai/artifact/HGTXFjYXRTWDVebCjL7QXb";
-  var QR_PATH = "M4 4h7v1h-7zM12 4h1v1h-1zM14 4h1v1h-1zM16 4h1v1h-1zM19 4h1v1h-1zM22 4h1v1h-1zM26 4h1v1h-1zM30 4h7v1h-7zM4 5h1v1h-1zM10 5h1v1h-1zM14 5h2v1h-2zM17 5h2v1h-2zM20 5h3v1h-3zM26 5h1v1h-1zM30 5h1v1h-1zM36 5h1v1h-1zM4 6h1v1h-1zM6 6h3v1h-3zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h2v1h-2zM18 6h1v1h-1zM22 6h2v1h-2zM25 6h3v1h-3zM30 6h1v1h-1zM32 6h3v1h-3zM36 6h1v1h-1zM4 7h1v1h-1zM6 7h3v1h-3zM10 7h1v1h-1zM16 7h1v1h-1zM18 7h1v1h-1zM20 7h1v1h-1zM22 7h1v1h-1zM24 7h2v1h-2zM30 7h1v1h-1zM32 7h3v1h-3zM36 7h1v1h-1zM4 8h1v1h-1zM6 8h3v1h-3zM10 8h1v1h-1zM17 8h4v1h-4zM22 8h4v1h-4zM27 8h1v1h-1zM30 8h1v1h-1zM32 8h3v1h-3zM36 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM12 9h4v1h-4zM18 9h1v1h-1zM20 9h1v1h-1zM24 9h1v1h-1zM26 9h1v1h-1zM30 9h1v1h-1zM36 9h1v1h-1zM4 10h7v1h-7zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h7v1h-7zM13 11h3v1h-3zM22 11h1v1h-1zM26 11h2v1h-2zM4 12h1v1h-1zM6 12h1v1h-1zM10 12h2v1h-2zM17 12h1v1h-1zM19 12h2v1h-2zM23 12h1v1h-1zM26 12h1v1h-1zM28 12h1v1h-1zM31 12h1v1h-1zM34 12h1v1h-1zM36 12h1v1h-1zM7 13h3v1h-3zM13 13h1v1h-1zM16 13h1v1h-1zM18 13h1v1h-1zM20 13h1v1h-1zM23 13h2v1h-2zM27 13h2v1h-2zM30 13h1v1h-1zM33 13h1v1h-1zM35 13h1v1h-1zM4 14h4v1h-4zM10 14h2v1h-2zM13 14h1v1h-1zM15 14h10v1h-10zM27 14h1v1h-1zM30 14h1v1h-1zM33 14h2v1h-2zM36 14h1v1h-1zM4 15h2v1h-2zM7 15h1v1h-1zM9 15h1v1h-1zM11 15h2v1h-2zM16 15h1v1h-1zM18 15h1v1h-1zM22 15h2v1h-2zM26 15h1v1h-1zM28 15h1v1h-1zM31 15h3v1h-3zM36 15h1v1h-1zM6 16h2v1h-2zM9 16h2v1h-2zM12 16h2v1h-2zM15 16h1v1h-1zM17 16h2v1h-2zM20 16h6v1h-6zM27 16h2v1h-2zM30 16h3v1h-3zM35 16h1v1h-1zM5 17h1v1h-1zM7 17h1v1h-1zM9 17h1v1h-1zM12 17h3v1h-3zM18 17h1v1h-1zM20 17h1v1h-1zM22 17h1v1h-1zM24 17h6v1h-6zM31 17h1v1h-1zM34 17h3v1h-3zM4 18h3v1h-3zM10 18h1v1h-1zM12 18h4v1h-4zM17 18h1v1h-1zM20 18h1v1h-1zM24 18h1v1h-1zM27 18h1v1h-1zM34 18h1v1h-1zM36 18h1v1h-1zM7 19h3v1h-3zM11 19h2v1h-2zM16 19h5v1h-5zM23 19h2v1h-2zM27 19h1v1h-1zM29 19h3v1h-3zM33 19h1v1h-1zM4 20h4v1h-4zM10 20h1v1h-1zM13 20h1v1h-1zM16 20h3v1h-3zM20 20h1v1h-1zM27 20h1v1h-1zM30 20h2v1h-2zM34 20h2v1h-2zM5 21h1v1h-1zM7 21h1v1h-1zM9 21h1v1h-1zM11 21h4v1h-4zM17 21h1v1h-1zM20 21h2v1h-2zM23 21h2v1h-2zM27 21h2v1h-2zM30 21h1v1h-1zM33 21h1v1h-1zM36 21h1v1h-1zM4 22h1v1h-1zM7 22h1v1h-1zM9 22h3v1h-3zM13 22h3v1h-3zM19 22h1v1h-1zM23 22h1v1h-1zM25 22h3v1h-3zM30 22h2v1h-2zM33 22h2v1h-2zM36 22h1v1h-1zM6 23h2v1h-2zM11 23h1v1h-1zM13 23h1v1h-1zM15 23h1v1h-1zM17 23h5v1h-5zM26 23h1v1h-1zM30 23h1v1h-1zM32 23h2v1h-2zM36 23h1v1h-1zM4 24h3v1h-3zM10 24h1v1h-1zM12 24h1v1h-1zM15 24h1v1h-1zM18 24h1v1h-1zM21 24h1v1h-1zM23 24h3v1h-3zM27 24h2v1h-2zM30 24h1v1h-1zM32 24h1v1h-1zM36 24h1v1h-1zM6 25h1v1h-1zM9 25h1v1h-1zM11 25h3v1h-3zM16 25h1v1h-1zM18 25h1v1h-1zM26 25h1v1h-1zM28 25h1v1h-1zM30 25h2v1h-2zM34 25h1v1h-1zM36 25h1v1h-1zM4 26h3v1h-3zM9 26h2v1h-2zM14 26h1v1h-1zM16 26h2v1h-2zM19 26h1v1h-1zM21 26h14v1h-14zM36 26h1v1h-1zM8 27h1v1h-1zM11 27h1v1h-1zM15 27h2v1h-2zM22 27h1v1h-1zM26 27h2v1h-2zM29 27h3v1h-3zM33 27h1v1h-1zM35 27h1v1h-1zM4 28h3v1h-3zM10 28h5v1h-5zM16 28h1v1h-1zM19 28h2v1h-2zM23 28h2v1h-2zM27 28h6v1h-6zM34 28h3v1h-3zM12 29h2v1h-2zM15 29h1v1h-1zM18 29h2v1h-2zM23 29h3v1h-3zM28 29h1v1h-1zM32 29h1v1h-1zM4 30h7v1h-7zM12 30h5v1h-5zM18 30h6v1h-6zM25 30h2v1h-2zM28 30h1v1h-1zM30 30h1v1h-1zM32 30h3v1h-3zM36 30h1v1h-1zM4 31h1v1h-1zM10 31h1v1h-1zM14 31h2v1h-2zM20 31h1v1h-1zM22 31h3v1h-3zM27 31h2v1h-2zM32 31h2v1h-2zM4 32h1v1h-1zM6 32h3v1h-3zM10 32h1v1h-1zM13 32h1v1h-1zM15 32h2v1h-2zM19 32h4v1h-4zM24 32h1v1h-1zM27 32h6v1h-6zM35 32h1v1h-1zM4 33h1v1h-1zM6 33h3v1h-3zM10 33h1v1h-1zM14 33h2v1h-2zM20 33h1v1h-1zM22 33h1v1h-1zM25 33h1v1h-1zM29 33h1v1h-1zM31 33h2v1h-2zM35 33h2v1h-2zM4 34h1v1h-1zM6 34h3v1h-3zM10 34h1v1h-1zM12 34h1v1h-1zM14 34h5v1h-5zM20 34h1v1h-1zM22 34h5v1h-5zM29 34h1v1h-1zM31 34h3v1h-3zM35 34h2v1h-2zM4 35h1v1h-1zM10 35h1v1h-1zM14 35h1v1h-1zM16 35h1v1h-1zM19 35h2v1h-2zM22 35h2v1h-2zM26 35h1v1h-1zM28 35h2v1h-2zM31 35h3v1h-3zM4 36h7v1h-7zM12 36h3v1h-3zM16 36h1v1h-1zM18 36h1v1h-1zM23 36h2v1h-2zM26 36h1v1h-1zM28 36h1v1h-1zM30 36h3v1h-3zM34 36h1v1h-1zM36 36h1v1h-1z";
-  var QR_SIZE = 41;
-  function qrSvg() {
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + QR_SIZE + ' ' + QR_SIZE + '" role="img" aria-label="Código QR de Aliados Haceb" shape-rendering="crispEdges"><rect width="' + QR_SIZE + '" height="' + QR_SIZE + '" fill="#fff"/><path d="' + QR_PATH + '" fill="#000"/></svg>';
-  }
-  function viewQr() {
-    var donde = [
-      ["Mostrador del distribuidor", "Tarjeta o afiche con el QR junto a la caja"],
-      ["Capacitaciones", "QR en la última diapositiva y en la hoja de asistencia"],
-      ["Eventos de la marca", "QR en el stand y en el material entregado"],
-      ["Visita o llamada comercial", "El asesor envía el enlace para que el técnico actualice su autorización"]
-    ].map(function (x) { return "<tr><td>" + esc(x[0]) + "</td><td>" + esc(x[1]) + "</td></tr>"; }).join("");
-    return '<div class="section"><h2>Código QR de registro</h2><p>Este QR abre el prototipo de la app. Para producción se reemplaza por el enlace definitivo y se agrega el parámetro de origen de cada punto de entrega.</p></div>' +
-      '<div class="qrgrid"><div class="qrcard"><div class="wm">Aliados <span>Haceb</span></div><div class="q">' + qrSvg() + '</div><div class="go">Escanea y regístrate</div><div class="url">' + esc(QR_URL) + '</div></div>' +
-      '<div><h3>Dónde se entrega</h3><div class="table-wrap"><table><thead><tr><th>Punto</th><th>Cómo</th></tr></thead><tbody>' + donde + '</tbody></table></div>' +
-      '<div class="legal">El QR de demostración apunta a este prototipo; el archivo imprimible se entrega aparte. El código del tamaño de una tarjeta se imprime a mínimo 3 cm de lado, en negro sobre blanco, con una zona libre alrededor.</div></div></div>';
-  }
-
-  function pill(v) { return '<span class="pill ' + (v ? "yes" : "no") + '">' + (v ? "Sí" : "No") + '</span>'; }
-  function viewContenido() {
-    var dol = Object.keys(CONTENIDO_DOLOR).map(function (k) {
-      var d = DOLORES.filter(function (x) { return x.id === k; })[0], c = CONTENIDO_DOLOR[k];
-      return "<tr><td>" + esc(d.t) + "</td><td>" + esc(c.titulo) + "</td><td>" + esc(c.formato) + "</td><td>" + esc(c.nota) + "</td></tr>";
-    }).join("");
-    var tem = Object.keys(CONTENIDO_TEMA).map(function (k) {
-      var t = TEMAS.filter(function (x) { return x.id === k; })[0], c = CONTENIDO_TEMA[k];
-      return "<tr><td>" + esc(t.t) + "</td><td>" + esc(c.titulo) + "</td><td>" + esc(c.formato) + "</td></tr>";
-    }).join("");
-    var ser = Object.keys(SERIES).map(function (k) { return "<tr><td>" + esc(tipoNombre(k)) + "</td><td>" + esc(SERIES[k].nombre) + "</td><td>" + esc(SERIES[k].foco) + "</td></tr>"; }).join("");
-    return '<div class="section"><h2>Contenido que se activa con el registro</h2><p>Cada respuesta del formulario decide qué recibe el técnico. Los títulos son propuestas; el contenido técnico y las reglas de garantías los valida Haceb antes de publicar.</p></div>' +
-      '<div class="section"><h3>Serie según cómo trabaja</h3><div class="table-wrap"><table><thead><tr><th>Si es</th><th>Serie</th><th>Foco</th></tr></thead><tbody>' + ser + '</tbody></table></div></div>' +
-      '<div class="section"><h3>Primeras piezas según lo que le hace perder tiempo</h3><div class="table-wrap"><table><thead><tr><th>Si responde</th><th>Recibe</th><th>Formato</th><th>Condición</th></tr></thead><tbody>' + dol + '</tbody></table></div></div>' +
-      '<div class="section"><h3>Pieza del día 14 según el tema elegido</h3><div class="table-wrap"><table><thead><tr><th>Si elige</th><th>Recibe</th><th>Formato</th></tr></thead><tbody>' + tem + '</tbody></table></div></div>' +
-      '<div class="section"><h3>Reglas de envío</h3><div class="table-wrap"><table><thead><tr><th>Regla</th><th>Cómo se aplica</th></tr></thead><tbody>' +
-      '<tr><td>Sin autorización de WhatsApp</td><td>No sale ningún mensaje comercial. El contenido se entrega en el catálogo web y de forma presencial.</td></tr>' +
-      '<tr><td>Horario</td><td>Solo entre semana de 7:00 a. m. a 7:00 p. m., dentro de la franja que eligió el técnico. Legal confirma la regla frente a la Ley 2300 de 2023.</td></tr>' +
-      '<tr><td>Frecuencia</td><td>Propuesta: hasta dos mensajes por semana en total, uno de ellos técnico y útil.</td></tr>' +
-      '<tr><td>Baja</td><td>El técnico responde BAJA y deja de recibir mensajes. La baja se registra el mismo día.</td></tr>' +
-      '<tr><td>Técnico de cadena</td><td>Sin bonos ni puntos; recibe soporte técnico, fichas y garantías.</td></tr>' +
-      '<tr><td>Directorio y casos reales</td><td>Solo con autorización aparte y, para casos reales, por escrito.</td></tr>' +
-      '</tbody></table></div></div>';
-  }
-
-
-  function fin(c) { return evalCli(c); }
-  function viewPanel() {
-    var rs = DATA.map(function (c) { return { c: c, e: evalCli(c) }; });
-    var por = [0, 0, 0, 0, 0]; rs.forEach(function (x) { por[x.e.nivel]++; });
-    var bloqueados = rs.filter(function (x) { var c = x.c; return c.seg !== "S6" && c.compras > 0 && c.pedidos >= 2 && c.trim >= 2 && c.seg60 && !c.aut; }).length;
-    var bonoTotal = rs.reduce(function (a, x) { return a + x.e.bono; }, 0);
-    var segs = ["S1", "S2", "S3", "S4", "S5", "S6"];
-    var matriz = segs.map(function (s) {
-      var f = rs.filter(function (x) { return x.c.seg === s; }), n = [0, 0, 0, 0, 0];
-      f.forEach(function (x) { n[x.e.nivel]++; });
-      return '<tr><td>' + s + ' · ' + esc(SEG_N[s]) + '</td><td>' + f.length + '</td><td>' + n[1] + '</td><td>' + n[2] + '</td><td>' + n[3] + '</td><td>' + n[4] + '</td></tr>';
-    }).join("");
-    var lista = rs.filter(function (x) { return S.seg === "todos" || x.c.seg === S.seg; }).map(function (x) {
-      var c = x.c;
-      return '<tr><td>' + c.ced + '</td><td>' + esc(c.nombre) + '</td><td>' + esc(c.ciudad) + '</td><td>' + esc(TIPO_N[c.tipo]) + '</td><td>' + c.seg + '</td><td>' + (c.compras ? cop(c.compras) : "$0") + '</td><td>' + x.e.nivel + ' · ' + esc(NIV_N[x.e.nivel]) + '</td><td>' + pill(c.aut) + '</td><td>' + (x.e.bono ? cop(x.e.bono) : "—") + '</td></tr>';
-    }).join("");
-    var opts = ['<option value="todos">Todos los segmentos</option>'].concat(segs.map(function (s) { return '<option value="' + s + '"' + (S.seg === s ? " selected" : "") + '>' + s + ' · ' + esc(SEG_N[s]) + '</option>'; })).join("");
-    return '<div class="section"><h2>Clientes y niveles</h2><p>Cruce entre la cédula y la facturación (base ficticia de 60 clientes). El nivel lo calcula el sistema con reglas fijas; el técnico solo ve su propia pantalla en el piloto de clientes.</p></div>' +
-      '<div class="tiles"><div class="tile"><b>' + DATA.length + '</b><span>Clientes en la base de prueba</span></div><div class="tile"><b>' + por[1] + '</b><span>Registrado</span></div><div class="tile"><b>' + por[2] + '</b><span>Aliado</span></div><div class="tile"><b>' + por[3] + '</b><span>Certificado</span></div><div class="tile"><b>' + por[4] + '</b><span>Aliado VIP</span></div></div>' +
-      '<div class="notice warn"><b>' + bloqueados + ' clientes</b> cumplen las condiciones de compra para ser Aliado, pero no suben porque no tienen autorización vigente. Es el primer frente de trabajo: regularizar el consentimiento.</div>' +
-      '<div class="section"><h3>Nivel por segmento</h3><div class="table-wrap"><table><thead><tr><th>Segmento</th><th>Clientes</th><th>Registrado</th><th>Aliado</th><th>Certificado</th><th>VIP</th></tr></thead><tbody>' + matriz + '</tbody></table></div></div>' +
-      '<div class="section"><h3>Clientes</h3><div class="toolbar"><label for="f-seg" class="hint">Filtrar por segmento</label><select id="f-seg" data-seg="1" style="max-width:320px">' + opts + '</select></div><div class="table-wrap"><table><thead><tr><th>Cédula</th><th>Nombre</th><th>Ciudad</th><th>Tipo</th><th>Seg.</th><th>Compras 12 m</th><th>Nivel</th><th>Autoriz.</th><th>Bono estimado</th></tr></thead><tbody>' + lista + '</tbody></table></div><p class="hint" style="margin-top:8px">Bono estimado total de esta muestra: ' + cop(bonoTotal) + ' (si todos redimen).</p></div>';
-  }
-  function calc(pa, pc, pv, red) {
-    var base = 5097; // S1 + S2 + S3, en $M (caso)
-    return base * (pa * 0.01 + pc * 0.02 + pv * 0.03) / 100 * (red / 100);
-  }
-  function viewBenef() {
-    var worst = 3763 * 0.03 + 859 * 0.02 + 475 * 0.01;
-    return '<div class="section"><h2>Beneficios por nivel y presupuesto</h2><p>El beneficio es un bono de continuidad que se entrega en repuesto o herramienta después de comprar. No baja el precio en el mostrador: protege el precio técnico y premia la constancia en lugar del descuento plano.</p></div>' +
-      '<div class="table-wrap"><table><thead><tr><th>Nivel</th><th>Bono sobre compras</th><th>Otros beneficios</th><th>Condición</th></tr></thead><tbody>' +
-      '<tr><td>1 · Registrado</td><td>0%</td><td>Contenido de inicio y biblioteca</td><td>Registro y autorización</td></tr>' +
-      '<tr><td>2 · Aliado</td><td>1%</td><td>Boletín y contenido de su serie</td><td>2.ª compra en 60 días, dos trimestres seguidos, autorización vigente</td></tr>' +
-      '<tr><td>3 · Certificado</td><td>2%</td><td>Sello, directorio (si autoriza), contenido avanzado</td><td>Aliado, Ruta Especialista aprobada, menos de 25% de pedidos con descuento</td></tr>' +
-      '<tr><td>4 · Aliado VIP</td><td>3%</td><td>Atención prioritaria, si la operación puede cumplirla</td><td>Certificado y cuatro trimestres seguidos</td></tr>' +
-      '<tr><td>Técnico de cadena</td><td>0%</td><td>Soporte técnico directo y certificación</td><td>No hay bonos: compra la cadena</td></tr></tbody></table></div>' +
-      '<div class="section" style="margin-top:20px"><h3>Cuánto cuesta frente al presupuesto</h3>' +
-      '<p>El caso asigna $145 M al pilar de beneficios y recompra. Las compras de S1, S2 y S3 suman $5.097 M. Si todos los clientes estuvieran en el nivel más alto posible de su segmento (S1 en VIP, S2 en Certificado, S3 en Aliado) el costo sería de <b>$' + worst.toFixed(1).replace(".", ",") + ' M</b>, por debajo del tope. Es un techo, no una expectativa.</p>' +
-      '<div class="calc"><label>% de compras en Aliado<input type="number" min="0" max="100" value="40" data-calc="pa"></label><label>% de compras en Certificado<input type="number" min="0" max="100" value="20" data-calc="pc"></label><label>% de compras en VIP<input type="number" min="0" max="100" value="10" data-calc="pv"></label><label>% de bonos que se redimen<input type="number" min="0" max="100" value="100" data-calc="red"></label></div>' +
-      '<div class="out" id="calc-out" aria-live="polite"></div>' +
-      '<p class="hint" style="margin-top:10px">Supuestos: los porcentajes de distribución y de redención son ejemplos para jugar con el modelo, no datos del caso. El margen bruto del caso no existe; con el 35% supuesto en el modelo financiero, un bono del 3% equivale a cerca del 8,6% del margen y uno del 1% a cerca del 2,9%. Con el descuento plano de 20% de junio no se puede comparar en pesos porque su costo real no está en el caso.</p></div>' +
-      '<div class="notice warn">Riesgo a vigilar: G4 compra el 86% de sus pedidos con descuento. Al cambiar el descuento plano por un bono, parte de ese grupo puede comprar menos. Por eso el primer bono se activa en la segunda compra dentro de 60 días y se mide la recompra a 90 días contra el 27% de junio.</div>';
-  }
-  function updCalc() {
-    var g = function (k) { var el = document.querySelector('[data-calc="' + k + '"]'); return Math.max(0, Math.min(100, parseFloat(el && el.value) || 0)); };
-    var pa = g("pa"), pc = g("pc"), pv = g("pv"), red = g("red"), out = document.getElementById("calc-out");
-    if (!out) return;
-    var tot = pa + pc + pv, cost = calc(pa, pc, pv, red);
-    out.innerHTML = (tot > 100 ? '<b>Los porcentajes suman más de 100.</b> Ajústalos.' : 'Costo estimado: <b>$' + cost.toFixed(1).replace(".", ",") + ' M</b> de $145 M disponibles (' + Math.round(cost / 145 * 100) + '%).');
-  }
-  function viewBase() {
-    var rows = DATA.map(function (c) { return '<tr><td>' + c.ced + '</td><td>' + esc(c.nombre) + '</td><td>' + esc(c.ciudad) + '</td><td>' + c.grupo + '</td><td>' + c.seg + '</td><td>' + esc(c.tipo) + '</td><td>' + c.compras + '</td><td>' + c.pedidos + '</td><td>' + Math.round(c.pctDesc * 100) + '%</td><td>' + c.trim + '</td><td>' + (c.seg60 ? "Sí" : "No") + '</td><td>' + (c.ruta ? "Sí" : "No") + '</td><td>' + (c.aut ? "Sí" : "No") + '</td></tr>'; }).join("");
-    return '<div class="section"><h2>Base de facturación (ficticia)</h2><p>Sirve para probar el cruce por cédula. Los nombres y las cédulas (que empiezan por 9) no corresponden a personas reales; las cifras siguen el orden de magnitud de cada grupo del caso. En producción esta base sale del sistema de facturación y el cruce lo hace un servidor, no el navegador.</p></div>' +
-      '<div class="table-wrap"><table><thead><tr><th>Cédula</th><th>Nombre</th><th>Ciudad</th><th>Grupo</th><th>Seg.</th><th>Tipo</th><th>Compras 12 m ($M)</th><th>Pedidos</th><th>% con desc.</th><th>Trim. seguidos</th><th>2.ª compra &lt;60 d</th><th>Ruta Especialista</th><th>Autoriz.</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
-  }
-
-  var DB = null, REGS = [], dbState = "cargando";
-  function rowsFrom(snap) {
-    var arr = Array.isArray(snap) ? snap : (snap && snap.docs) ? snap.docs : [];
-    return arr.map(function (d) { return (d && typeof d.data === "function") ? d.data() : d; }).filter(Boolean);
-  }
-  function initDb() {
-    try {
-      if (typeof claude === "undefined" || !claude.use) { dbState = "no"; return; }
-      var t = setTimeout(function () { if (dbState === "cargando") { dbState = "no"; if (S.mode === "int" && S.tab === "regs") render(); } }, 10000);
-      claude.use("db").then(function (db) {
-        clearTimeout(t);
-        if (!db) { dbState = "no"; if (S.mode === "int" && S.tab === "regs") render(); return; }
-        DB = db; dbState = "si";
-        if (S.mode === "int") {
-          try { db.collection("registros").orderBy("ts", "desc").limit(200).onSnapshot(function (snap) { REGS = rowsFrom(snap); if (S.mode === "int" && S.tab === "regs") render(); }, function () { dbState = "error"; if (S.tab === "regs") render(); }); } catch (e) { dbState = "error"; }
-        }
-      }).catch(function () { dbState = "no"; });
-    } catch (e) { dbState = "no"; }
-  }
-  function localRegs() { try { return JSON.parse(localStorage.getItem("aliados_registros") || "[]"); } catch (e) { return []; } }
-  function saveRemote(rec) {
-    try { var l = localRegs(); l.unshift(rec); localStorage.setItem("aliados_registros", JSON.stringify(l.slice(0, 200))); } catch (e) {}
-    if (!DB) return;
-    try { DB.collection("registros").doc("r" + Date.now() + Math.floor(Math.random() * 1000)).set(rec).catch(function () {}); } catch (e) {}
-  }
-  function viewRegs() {
-    var msg;
-    if (dbState === "si") msg = '<div class="notice good">Conectado a la base compartida del piloto. Solo el dueño y los editores de este documento ven esta lista.</div>';
-    else if (dbState === "cargando") msg = '<div class="notice warn">Conectando con la base compartida…</div>';
-    else { REGS = localRegs(); msg = '<div class="notice warn">Estos registros están guardados en este navegador y este dispositivo. No se comparten con otros equipos: para recibir registros de varias personas hace falta una base de datos en un servidor.</div>'; }
-    var rows = REGS.map(function (r) { return '<tr><td>' + esc(r.ts) + '</td><td>' + esc(r.nombre) + '</td><td>' + esc(r.ciudad) + '</td><td>' + esc(TIPO_N[r.tipo] || r.tipo) + '</td><td>' + esc(r.origen) + '</td><td>…' + esc(r.cedulaFin) + '</td><td>' + esc(r.seg || "Sin compras en la base") + '</td><td>' + esc(NIV_N[r.nivel] || "") + '</td><td>' + pill(r.consentWhatsapp) + '</td></tr>'; }).join("");
-    return '<div class="section"><h2>Registros del piloto</h2><p>Lo que se registra en el piloto desde este mismo navegador aparece aquí. Para proteger datos personales solo se guarda el primer nombre, la ciudad, el tipo, el origen, las tres últimas cifras de la cédula y el resultado del cruce. No se guarda el celular.</p></div>' + msg +
-      '<div class="tiles"><div class="tile"><b>' + REGS.length + '</b><span>Registros recibidos</span></div></div>' +
-      '<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Nombre</th><th>Ciudad</th><th>Tipo</th><th>Origen</th><th>Cédula</th><th>Segmento</th><th>Nivel</th><th>WhatsApp</th></tr></thead><tbody>' + (rows || '<tr><td colspan="9">Todavía no hay registros. Haz uno en el piloto y vuelve.</td></tr>') + '</tbody></table></div>';
-  }
-
   /* ---------- Render y eventos ---------- */
   var root = document.getElementById("panel");
   function render() {
-    var tabs = S.mode === "int"
-      ? [["panel", "Clientes y niveles"], ["regs", "Registros del piloto"], ["benef", "Beneficios y presupuesto"], ["contenido", "Contenido que se activa"], ["qr", "Código QR"], ["base", "Base de facturación (ficticia)"]]
-      : [["registro", "Registro del técnico"], ["consulta", "Consultar mi nivel"], ["escalera", "Escalera VIP"]];
-    document.getElementById("nav").innerHTML = tabs.map(function (t) { return '<button role="tab" aria-selected="' + (t[0] === S.tab ? "true" : "false") + '" aria-controls="panel" data-tab="' + t[0] + '">' + t[1] + '</button>'; }).join("");
-    document.getElementById("note").textContent = S.mode === "int"
-      ? "Panel interno del piloto, solo para el equipo. Los datos de clientes son ficticios."
-      : "Piloto con datos de prueba. No escribas datos reales: el cruce usa una base ficticia. Las cédulas de prueba no son de personas reales.";
-    var h;
-    if (S.mode === "int") h = S.tab === "panel" ? viewPanel() : S.tab === "regs" ? viewRegs() : S.tab === "benef" ? viewBenef() : S.tab === "base" ? viewBase() : S.tab === "qr" ? viewQr() : viewContenido();
-    else h = S.tab === "registro" ? viewStep() : S.tab === "consulta" ? viewConsulta() : viewEscalera();
+    var h = S.tab === "registro" ? viewStep() : S.tab === "consulta" ? viewConsulta() : viewEscalera();
     root.innerHTML = h;
-    if (S.mode === "int" && S.tab === "benef") updCalc();
+    Array.prototype.forEach.call(document.querySelectorAll("nav.tabs button"), function (b) { b.setAttribute("aria-selected", b.getAttribute("data-tab") === S.tab ? "true" : "false"); });
   }
-    function validate() {
+  function validate() {
     var d = S.d, e = {};
     if (S.step === 1) {
       if (d.nombre.trim().length < 3) e.nombre = "Escribe tu nombre completo.";
@@ -641,8 +499,6 @@ textarea.csv { width: 100%; height: 120px; font-family: monospace; font-size: 12
       nivel: rec.nivel, dolores: rec.dolores, temas: rec.temas, experiencia: rec.experiencia });
     S.last = { cedula: d.cedula, tipo: d.tipo, nombre: d.nombre.trim(), consentWhatsapp: d.consentWhatsapp, dolores: d.dolores.slice(), temas: d.temas.slice(), frecuencia: d.frecuencia, experiencia: d.experiencia, horario: d.horario };
     S.step = 5;
-    var cli = findCli(d.cedula), ev0 = cli ? evalCli(cli) : null;
-    saveRemote({ ts: now(), nombre: d.nombre.trim().split(" ")[0], ciudad: d.ciudad.trim(), tipo: d.tipo, origen: d.origen || "Sin dato", cedulaFin: d.cedula.replace(/\D/g, "").slice(-3), seg: cli ? cli.seg : "", nivel: ev0 ? ev0.nivel : 1, consentWhatsapp: !!d.consentWhatsapp });
   }
   root.addEventListener("click", function (ev) {
     var fl = ev.target.closest("[data-fill]");
@@ -680,13 +536,11 @@ textarea.csv { width: 100%; height: 120px; font-family: monospace; font-size: 12
     }
   });
   root.addEventListener("input", function (ev) {
-    if (ev.target.getAttribute("data-calc")) { updCalc(); return; }
     var qi = ev.target.getAttribute("data-qin"); if (qi) { S.q[qi] = ev.target.value; return; }
     var f = ev.target.getAttribute("data-in");
     if (f) S.d[f] = ev.target.value;
   });
   root.addEventListener("change", function (ev) {
-    if (ev.target.getAttribute("data-seg")) { S.seg = ev.target.value; render(); return; }
     var qc = ev.target.getAttribute("data-qchk"); if (qc) { S.q[qc] = ev.target.checked; return; }
     var c = ev.target.getAttribute("data-chk");
     if (c) { S.d[c] = ev.target.checked; S.errors = {}; render(); }
@@ -696,8 +550,6 @@ textarea.csv { width: 100%; height: 120px; font-family: monospace; font-size: 12
     if (!b) return;
     S.tab = b.getAttribute("data-tab"); render(); window.scrollTo(0, 0);
   });
-  window.addEventListener("hashchange", function () { location.reload(); });
-  initDb();
   render();
 })();
 </script>
