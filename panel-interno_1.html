@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aliados Haceb · Panel interno (piloto)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Colores tomados de las imágenes de marca compartidas (verde lima aproximado, negro y blanco). Confirmar con el manual de marca de Haceb.
+   Layout: columna única de 480 px para el registro; las vistas del equipo y de contenido usan 980 px. */
+:root {
+  --ink: #111111;
+  --muted: #5b6470;
+  --line: #dfe2e6;
+  --bg: #f3f3f1;
+  --card: #ffffff;
+  --brand: #b6cc22;
+  --brand-dark: #56630a;
+  --brand-soft: #f1f6cc;
+  --danger: #b3261e;
+  --good: #1f7a4d;
+  --good-soft: #e6f4ec;
+  --warn: #8a5a00;
+  --warn-soft: #fff3da;
+  --font-display: "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
+  --font-body: "Nunito Sans", "Segoe UI", Arial, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.45; }
+button, input, select, textarea { font: inherit; color: inherit; }
+header.top { background: #000; border-bottom: 4px solid var(--brand); }
+.top-in { max-width: 980px; margin: 0 auto; padding: 14px 16px 0; display: flex; flex-direction: column; gap: 10px; }
+.wordmark { font-family: var(--font-display); font-weight: 700; font-style: italic; font-size: 28px; letter-spacing: 0.01em; color: #fff; line-height: 1; }
+.wordmark span { color: var(--brand); }
+.demo-note { font-size: 13px; color: #cfd3d6; }
+nav.tabs { display: flex; gap: 4px; overflow-x: auto; }
+nav.tabs button { background: none; border: 0; border-bottom: 3px solid transparent; padding: 10px 12px; font-weight: 700; color: #cfd3d6; cursor: pointer; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: #fff; border-bottom-color: var(--brand); }
+main { max-width: 980px; margin: 0 auto; padding: 20px 16px 48px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+.app { max-width: 480px; margin: 0 auto; }
+.progress { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font-size: 13px; color: var(--muted); }
+.bar { flex: 1; height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--brand); }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; margin: 0; text-wrap: balance; }
+h1 { font-size: 32px; }
+h2 { font-size: 26px; margin-bottom: 6px; }
+h3 { font-size: 20px; margin-bottom: 8px; }
+p { margin: 0 0 12px; }
+.sub { color: var(--muted); margin-bottom: 18px; }
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+label, .lab { font-weight: 700; font-size: 15px; }
+.hint { font-size: 13px; color: var(--muted); font-weight: 400; }
+input[type=text], input[type=tel], select { width: 100%; padding: 12px; border: 1.5px solid var(--line); border-radius: 8px; background: #fff; min-height: 48px; }
+input:focus-visible, select:focus-visible, button:focus-visible { outline: 3px solid #111; outline-offset: 2px; }
+nav.tabs button:focus-visible { outline-color: #fff; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1.5px solid var(--line); background: #fff; border-radius: 999px; padding: 10px 14px; min-height: 44px; cursor: pointer; font-weight: 600; }
+.chip[aria-pressed="true"] { border-color: var(--ink); background: var(--brand); color: #000; }
+.options { display: flex; flex-direction: column; gap: 8px; }
+.opt { text-align: left; border: 1.5px solid var(--line); background: #fff; border-radius: 10px; padding: 12px 14px; cursor: pointer; }
+.opt[aria-pressed="true"] { border-color: var(--ink); background: var(--brand-soft); box-shadow: inset 4px 0 0 var(--brand); }
+.opt b { display: block; }
+.opt small { color: var(--muted); }
+.err { color: var(--danger); font-size: 14px; font-weight: 600; }
+.row-btn { display: flex; gap: 10px; margin-top: 8px; }
+.btn { min-height: 48px; padding: 0 20px; border-radius: 8px; border: 1.5px solid var(--ink); background: #fff; font-weight: 700; cursor: pointer; }
+.btn.primary { background: var(--brand); border-color: #000; color: #000; flex: 1; }
+.btn.primary:hover { background: #a3b81c; }
+.btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.consent { display: flex; gap: 12px; align-items: flex-start; padding: 12px; border: 1.5px solid var(--line); border-radius: 10px; margin-bottom: 10px; }
+.consent input { width: 22px; height: 22px; margin-top: 2px; flex: none; accent-color: var(--brand); }
+.consent .t { font-size: 14px; font-weight: 400; }
+.consent .t b { display: block; font-size: 15px; }
+.tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.tag.req { background: var(--brand-soft); color: var(--brand-dark); }
+.tag.nop { background: #eceef0; color: var(--muted); }
+.legal { font-size: 13px; color: var(--muted); background: var(--warn-soft); border-radius: 8px; padding: 10px 12px; margin: 12px 0; }
+.level { display: flex; gap: 12px; align-items: center; padding: 12px; background: var(--brand-soft); border-radius: 10px; margin: 14px 0; }
+.level .n { font-family: var(--font-display); font-weight: 700; font-size: 34px; color: var(--brand-dark); line-height: 1; }
+.week { list-style: none; padding: 0; margin: 0 0 14px; display: flex; flex-direction: column; gap: 8px; }
+.week li { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.week .d { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.week .s { font-size: 13px; color: var(--muted); }
+.chat { background: #e9efe9; border-radius: 12px; padding: 12px; margin-bottom: 14px; }
+.bubble { background: #fff; border-radius: 12px 12px 12px 2px; padding: 10px 12px; font-size: 15px; max-width: 92%; box-shadow: 0 1px 1px rgba(0,0,0,.08); white-space: pre-line; }
+.chat .meta { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.notice { font-size: 14px; border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; }
+.notice.warn { background: var(--warn-soft); color: var(--warn); }
+.notice.good { background: var(--good-soft); color: var(--good); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+.tile b { font-family: var(--font-display); font-size: 32px; display: block; line-height: 1; }
+.tile span { font-size: 13px; color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { background: #f7f7f6; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+.pill { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.pill.yes { background: var(--good-soft); color: var(--good); }
+.pill.no { background: var(--warn-soft); color: var(--warn); }
+.pill.demo { background: #eceef0; color: var(--muted); }
+.section { margin-bottom: 28px; }
+.section > p { color: var(--muted); max-width: 70ch; }
+textarea.csv { width: 100%; height: 120px; font-family: monospace; font-size: 12px; margin-top: 10px; border: 1.5px solid var(--line); border-radius: 8px; padding: 8px; }
+
+.ladder { list-style: none; padding: 0; margin: 0 0 20px; display: grid; gap: 12px; }
+.ladder li { display: grid; grid-template-columns: 56px 1fr; gap: 14px; background: var(--card); border: 1.5px solid var(--ink); border-radius: 12px; padding: 14px; }
+.ladder .num { width: 56px; height: 56px; border-radius: 50%; background: var(--brand); color: #000; font-family: var(--font-display); font-style: italic; font-weight: 700; font-size: 30px; display: flex; align-items: center; justify-content: center; }
+.ladder li.top .num { background: #000; color: var(--brand); }
+.ladder b { font-family: var(--font-display); font-size: 21px; display: block; }
+.ladder .k { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-top: 8px; }
+.ladder p { margin: 2px 0 0; font-size: 14px; }
+.qrgrid { display: grid; grid-template-columns: minmax(260px, 340px) minmax(260px, 340px) 1fr; gap: 20px; align-items: start; margin-bottom: 24px; }
+@media (max-width: 1000px) { .qrgrid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 720px) { .qrgrid { grid-template-columns: 1fr; } }
+.qrcard { background: #000; color: #fff; border-radius: 14px; padding: 22px; text-align: center; border-bottom: 8px solid var(--brand); }
+.qrcard .wm { font-family: var(--font-display); font-style: italic; font-weight: 700; font-size: 26px; }
+.qrcard .wm span { color: var(--brand); }
+.qrcard .q { background: #fff; border-radius: 10px; padding: 6px; margin: 14px auto; width: 220px; max-width: 100%; }
+.qrcard .q svg { display: block; width: 100%; height: auto; }
+.qrcard .go { font-family: var(--font-display); font-style: italic; font-weight: 700; font-size: 22px; color: var(--brand); line-height: 1.1; }
+.qrcard .url { font-size: 11px; color: #cfd3d6; word-break: break-all; margin-top: 10px; }
+
+.perfil { margin: 6px 0 14px; }
+.who b { font-family: var(--font-display); font-size: 22px; display: block; }
+.who span { color: var(--muted); font-size: 14px; }
+.levelbig { display: flex; gap: 12px; align-items: center; padding: 12px; background: var(--brand-soft); border-radius: 10px; margin: 12px 0; }
+.levelbig .n { font-family: var(--font-display); font-style: italic; font-weight: 700; font-size: 42px; line-height: 1; background: var(--brand); color: #000; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: none; }
+.stepper { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 0; margin: 0 0 14px; }
+.stepper .st { text-align: center; }
+.stepper .st span { display: flex; width: 32px; height: 32px; margin: 0 auto 4px; border-radius: 50%; border: 2px solid var(--line); align-items: center; justify-content: center; font-weight: 700; background: #fff; }
+.stepper .st.on span { background: var(--brand); border-color: #000; color: #000; }
+.stepper .st.cur span { background: #000; color: var(--brand); border-color: #000; }
+.stepper small { font-size: 12px; color: var(--muted); }
+.stepper .st.cur small { color: var(--ink); font-weight: 700; }
+.kv { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.kv div { border: 1px solid var(--line); border-radius: 8px; padding: 8px; }
+.kv small { display: block; font-size: 11px; color: var(--muted); }
+.kv b { font-size: 15px; }
+.checks { list-style: none; padding: 0; margin: 0 0 14px; display: grid; gap: 6px; }
+.checks li { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 14px; }
+.checks li.ok { background: var(--good-soft); }
+.checks em { color: var(--muted); font-style: normal; font-size: 13px; }
+.bono { border: 2px solid #000; border-radius: 10px; padding: 12px; margin-bottom: 14px; background: var(--brand-soft); }
+.bono small { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.bono b { font-family: var(--font-display); font-size: 30px; display: block; line-height: 1.1; }
+.prueba { margin: 6px 0 16px; border: 1px dashed var(--muted); border-radius: 10px; padding: 8px 12px; font-size: 14px; }
+.prueba summary { cursor: pointer; font-weight: 700; }
+.prueba table { width: 100%; font-size: 13px; }
+.linkbtn { background: none; border: 0; padding: 4px 0; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.calc { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 10px 0; }
+.calc label { display: flex; flex-direction: column; gap: 4px; }
+.calc input { width: 100%; padding: 10px; border: 1.5px solid var(--line); border-radius: 8px; min-height: 44px; }
+.out { border: 2px solid #000; border-radius: 10px; padding: 12px; background: var(--brand-soft); }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: no-preference) { .bar i { transition: width .25s ease; } }
+@media (max-width: 420px) { h1 { font-size: 28px; } .card { padding: 16px; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="wordmark">Aliados <span>Haceb</span> <small style="font-size:14px;font-style:normal;color:#cfd3d6;font-family:var(--font-body)">· Panel interno</small></div>
+    <div class="demo-note">Panel interno del piloto, solo para el equipo. Todos los datos de esta pantalla son ficticios. No muestra información real de ningún técnico.</div>
+    <nav class="tabs" role="tablist" aria-label="Vistas del panel interno">
+      <button role="tab" id="tab-panel" aria-selected="true" aria-controls="panel" data-tab="panel">Clientes y niveles</button>
+      <button role="tab" id="tab-benef" aria-selected="false" aria-controls="panel" data-tab="benef">Beneficios y presupuesto</button>
+      <button role="tab" id="tab-contenido" aria-selected="false" aria-controls="panel" data-tab="contenido">Contenido que se activa</button>
+      <button role="tab" id="tab-qr" aria-selected="false" aria-controls="panel" data-tab="qr">Código QR</button>
+      <button role="tab" id="tab-base" aria-selected="false" aria-controls="panel" data-tab="base">Base de facturación (ficticia)</button>
+    </nav>
+  </div>
+</header>
+<main id="panel" role="tabpanel"></main>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Datos del flujo ---------- */
+  var ORIGENES = ["Distribuidor", "Capacitación", "Evento de la marca", "Mi cadena me inscribió"];
+  var TIPOS = [
+    { id: "independiente", t: "Independiente", s: "Trabajo solo y compro por necesidad" },
+    { id: "taller", t: "Taller con ayudantes", s: "Atiendo varios locales con mi equipo" },
+    { id: "cadena", t: "Técnico de cadena", s: "Atiendo las tiendas de una cadena" }
+  ];
+  var EQUIPOS = ["Cavas", "Vitrinas", "Neveras"];
+  var CLIENTES = ["Tiendas", "Panaderías", "Restaurantes", "Otros"];
+  var EXPERIENCIA = ["Menos de 5 años", "5 a 10 años", "10 a 20 años", "Más de 20 años"];
+  var FRECUENCIA = [
+    { id: "semana", t: "Cada semana" },
+    { id: "quincena", t: "Cada 2 a 3 semanas" },
+    { id: "mes", t: "Cada mes" },
+    { id: "ocasional", t: "Solo cuando lo necesito" }
+  ];
+  var AYUDANTES = ["1", "2", "3", "4 o más"];
+  var DOLORES = [
+    { id: "agotado", t: "El repuesto está agotado" },
+    { id: "referencia", t: "No sé qué referencia pedir" },
+    { id: "garantias", t: "Me discuten la garantía" },
+    { id: "info", t: "No tengo información técnica del equipo" },
+    { id: "cobro", t: "Cobrar a mis clientes a 30 o 60 días" }
+  ];
+  var TEMAS = [
+    { id: "fallas", t: "Fallas frecuentes y diagnóstico" },
+    { id: "compresores", t: "Compresores y motores" },
+    { id: "garantias", t: "Garantías" },
+    { id: "nuevos", t: "Productos nuevos" },
+    { id: "taller", t: "Organizar mi taller" }
+  ];
+  var FORMATOS = ["Videos cortos", "Infografías", "Presencial en el distribuidor"];
+  var HORARIOS = ["7:00 a 9:00 a. m.", "12:00 a 2:00 p. m.", "5:00 a 7:00 p. m."];
+  var VERSION_TEXTO = "v0-demo (pendiente de validación por Legal)";
+
+  /* Contenido por respuesta: es la fuente única de la vista "Contenido que se activa" y del plan del técnico. */
+  var CONTENIDO_DOLOR = {
+    agotado: { titulo: "Cómo pedir un repuesto crítico sin perder tiempo", formato: "Microvideo de 60 s", nota: "Tema: la placa del equipo y los datos que aceleran la respuesta" },
+    referencia: { titulo: "Cómo buscar un repuesto por referencia, familia o equipo", formato: "Tutorial del catálogo", nota: "Depende de que el catálogo MVP esté listo" },
+    garantias: { titulo: "Qué reunir antes de pedir una garantía", formato: "Infografía", nota: "Las reglas las confirma el área de garantías antes de publicar" },
+    info: { titulo: "Fichas técnicas y despieces a la mano", formato: "Biblioteca técnica", nota: "Solo material validado por el área técnica" },
+    cobro: { titulo: "Calculadora de presupuesto de servicio", formato: "Herramienta", nota: "Idea por validar; no resuelve el plazo de pago de sus clientes" }
+  };
+  var CONTENIDO_TEMA = {
+    fallas: { titulo: "Serie: fallas frecuentes y cómo diagnosticarlas", formato: "Microcápsula semanal" },
+    compresores: { titulo: "Módulo 1 de la ruta Especialista: compresores y motores", formato: "Presencial en el distribuidor" },
+    garantias: { titulo: "Guía de garantías para el técnico", formato: "Infografía y consulta" },
+    nuevos: { titulo: "Novedades de producto", formato: "Boletín quincenal" },
+    taller: { titulo: "Organizar pedidos y tiempos del taller", formato: "Video corto y plantilla" }
+  };
+  var SERIES = {
+    taller: { nombre: "Operación del taller", foco: "Pedidos críticos, seguimiento y certificación avanzada" },
+    independiente: { nombre: "Crece con tu oficio", foco: "Ruta Especialista, sello y referidos" },
+    cadena: { nombre: "Soporte técnico directo", foco: "Fichas, despieces y garantías, sin incentivos de compra" }
+  };
+
+  /* ---------- Estado ---------- */
+  var seed = [
+    mk("Técnico ejemplo A", "Medellín", "taller", "Distribuidor", true, true, false, "Cada semana"),
+    mk("Técnico ejemplo B", "Bogotá", "independiente", "Capacitación", true, false, false, "Cada mes"),
+    mk("Técnico ejemplo C", "Cali", "cadena", "Mi cadena me inscribió", true, true, false, "Solo cuando lo necesito"),
+    mk("Técnico ejemplo D", "Medellín", "independiente", "Evento de la marca", true, true, true, "Cada 2 a 3 semanas")
+  ];
+  function mk(nombre, ciudad, tipo, origen, datos, wa, dir, frec) {
+    return { demo: true, ts: "Ejemplo", nombre: nombre, celular: "—", ciudad: ciudad, tipo: tipo, origen: origen,
+      consentDatos: datos, consentWhatsapp: wa, consentDirectorio: dir, frecuencia: frec, nivel: "1 · Registrado" };
+  }
+  function blank() {
+    return { origen: "", nombre: "", celular: "", ciudad: "", tipo: "", cadena: "", ayudantes: "", equipos: [], clientes: [],
+      experiencia: "", frecuencia: "", distribuidor: "", dolores: [], temas: [], formato: "", horario: "",
+      consentDatos: false, consentWhatsapp: false, consentDirectorio: false };
+  }
+  var S = { tab: "panel", seg: "todos", step: 0, d: blank(), errors: {}, records: seed.slice(), last: null, csv: false };
+  var TOTAL = 5;
+
+  /* ---------- Utilidades ---------- */
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function tipoNombre(id) { var t = TIPOS.filter(function (x) { return x.id === id; })[0]; return t ? t.t : ""; }
+  function frecNombre(id) { var f = FRECUENCIA.filter(function (x) { return x.id === id; })[0]; return f ? f.t : id || ""; }
+  function validCel(v) { return /^3\d{9}$/.test(v.replace(/\D/g, "")); }
+  function now() { var d = new Date(); return d.toLocaleDateString("es-CO") + " " + d.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" }); }
+  function toggle(arr, v) { var i = arr.indexOf(v); if (i < 0) arr.push(v); else arr.splice(i, 1); }
+  function chips(field, items, multi, getId, getT) {
+    return '<div class="chips" role="group">' + items.map(function (it) {
+      var id = getId ? getId(it) : it, t = getT ? getT(it) : it;
+      var on = multi ? S.d[field].indexOf(id) > -1 : S.d[field] === id;
+      return '<button type="button" class="chip" data-chip="' + field + '" data-multi="' + (multi ? 1 : 0) + '" data-val="' + esc(id) + '" aria-pressed="' + on + '">' + esc(t) + '</button>';
+    }).join("") + '</div>';
+  }
+
+  /* ---------- Motor de contenido ---------- */
+  function plan(r) {
+    var serie = SERIES[r.tipo] || SERIES.independiente;
+    var wa = !!r.consentWhatsapp;
+    var canal = wa ? "WhatsApp, " + (r.horario || "en el horario que elegiste") : "Catálogo web y entrega presencial (sin mensajes comerciales)";
+    var piezas = [];
+    piezas.push({ dia: "Día 0", titulo: wa ? "Mensaje de bienvenida y confirmación de tus autorizaciones" : "Pantalla de confirmación con el enlace al catálogo", canal: wa ? "WhatsApp" : "En pantalla" });
+    var dolores = (r.dolores || []).slice(0, 2);
+    dolores.forEach(function (d, i) {
+      var c = CONTENIDO_DOLOR[d];
+      piezas.push({ dia: i === 0 ? "Día 2" : "Día 7", titulo: c.titulo, canal: wa ? c.formato + " por WhatsApp" : c.formato + " en el catálogo web", nota: c.nota });
+    });
+    if (!dolores.length) {
+      piezas.push({ dia: "Día 2", titulo: CONTENIDO_DOLOR.referencia.titulo, canal: wa ? "Tutorial por WhatsApp" : "Tutorial en el catálogo web", nota: CONTENIDO_DOLOR.referencia.nota });
+    }
+    var tema = (r.temas || [])[0];
+    if (tema) piezas.push({ dia: "Día 14", titulo: CONTENIDO_TEMA[tema].titulo, canal: CONTENIDO_TEMA[tema].formato });
+    if (r.tipo === "cadena") {
+      piezas.push({ dia: "Día 7", titulo: "Canal de soporte técnico para garantías y fichas", canal: wa ? "WhatsApp de soporte" : "Contacto por la cadena", nota: "Sin bonos ni puntos: la cadena decide la compra" });
+    } else if (r.frecuencia === "ocasional" || r.frecuencia === "mes") {
+      if (wa) piezas.push({ dia: "Día 30", titulo: "Aviso del bono de continuidad para tu segunda compra", canal: "WhatsApp", nota: "Condiciones por definir y publicar por escrito" });
+    } else {
+      piezas.push({ dia: "Día 30", titulo: "Invitación a la certificación Especialista", canal: wa ? "WhatsApp y presencial" : "Presencial en el distribuidor" });
+    }
+    var anios = EXPERIENCIA.indexOf(r.experiencia);
+    if (anios >= 2 && r.tipo !== "cadena") piezas.push({ dia: "Día 45", titulo: "Invitación opcional a contar un caso real", canal: wa ? "WhatsApp" : "Presencial", nota: "Solo con autorización escrita del técnico" });
+    var orden = function (p) { return parseInt(p.dia.replace(/\D/g, ""), 10); };
+    piezas.sort(function (a, b) { return orden(a) - orden(b); });
+    return { serie: serie, canal: canal, piezas: piezas, wa: wa };
+  }
+  function welcome(r) {
+    var n = (r.nombre || "").split(" ")[0] || "técnico";
+    return "Hola " + n + ", ya eres parte de Aliados Haceb.\nTe escribimos solo cuando sirve: fichas, videos cortos y novedades de tus equipos.\nSi necesitas un repuesto, escríbenos la referencia o una foto de la placa del equipo.\nPara no recibir más mensajes, responde BAJA.";
+  }
+
+  /* ---------- Vistas ---------- */
+  function stepHead(n, title, sub) {
+    var pct = Math.round(n / TOTAL * 100);
+    return '<div class="progress"><span>Paso ' + n + ' de ' + TOTAL + '</span><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div></div><h2>' + title + '</h2><p class="sub">' + sub + '</p>';
+  }
+  function err(k) { return S.errors[k] ? '<div class="err" role="alert">' + esc(S.errors[k]) + '</div>' : ""; }
+  function nav(back, nextLabel, disabled) {
+    return '<div class="row-btn">' + (back ? '<button type="button" class="btn" data-go="back">Atrás</button>' : "") +
+      '<button type="button" class="btn primary" data-go="next"' + (disabled ? " disabled" : "") + '>' + nextLabel + '</button></div>';
+  }
+
+
+  /* ---------- Base de facturación FICTICIA y reglas de nivel ---------- */
+  var DATA = [{"ced":"9000000001","nombre":"Hernán Restrepo Cano","ciudad":"Medellín","tipo":"taller","grupo":"G2","seg":"S1","compras":11.4,"pedidos":52,"pctDesc":0.12,"meses":0.7,"cursos":4,"trim":4,"seg60":true,"aut":true,"ruta":true,"ultima":null,"base":10.41},{"ced":"9000000002","nombre":"Taller Frío Andino (Diana Ríos)","ciudad":"Bogotá","tipo":"taller","grupo":"G2","seg":"S1","compras":8.2,"pedidos":40,"pctDesc":0.18,"meses":0.7,"cursos":3,"trim":3,"seg60":true,"aut":true,"ruta":true,"ultima":null,"base":7.67},{"ced":"9000000003","nombre":"Julián Montoya Ospina","ciudad":"Barranquilla","tipo":"taller","grupo":"G2","seg":"S1","compras":10.1,"pedidos":51,"pctDesc":0.13,"meses":0.7,"cursos":5,"trim":4,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":8.85},{"ced":"9000000004","nombre":"Iván Pineda Cardona","ciudad":"Cali","tipo":"taller","grupo":"G2","seg":"S1","compras":6.95,"pedidos":31,"pctDesc":0.25,"meses":0.7,"cursos":1,"trim":2,"seg60":true,"aut":true,"ruta":true,"ultima":null,"base":6.57},{"ced":"9000000005","nombre":"Luz Cardona Arango","ciudad":"Pereira","tipo":"taller","grupo":"G2","seg":"S1","compras":8.33,"pedidos":50,"pctDesc":0.06,"meses":0.7,"cursos":3,"trim":2,"seg60":false,"aut":false,"ruta":true,"ultima":null,"base":7.4},{"ced":"9000000006","nombre":"Fabio Builes Cano","ciudad":"Pereira","tipo":"taller","grupo":"G2","seg":"S1","compras":6.99,"pedidos":34,"pctDesc":0.06,"meses":0.7,"cursos":5,"trim":4,"seg60":true,"aut":false,"ruta":true,"ultima":null,"base":6.35},{"ced":"9000000007","nombre":"Julián Vélez Cano","ciudad":"Manizales","tipo":"taller","grupo":"G6","seg":"S1","compras":36.82,"pedidos":187,"pctDesc":0.03,"meses":0,"cursos":0,"trim":2,"seg60":true,"aut":false,"ruta":true,"ultima":null,"base":34.86},{"ced":"9000000008","nombre":"Julián Builes Restrepo","ciudad":"Bucaramanga","tipo":"taller","grupo":"G6","seg":"S1","compras":22.17,"pedidos":196,"pctDesc":0,"meses":0,"cursos":0,"trim":4,"seg60":true,"aut":false,"ruta":false,"ultima":null,"base":19.78},{"ced":"9000000009","nombre":"Albeiro Vélez Restrepo","ciudad":"Manizales","tipo":"taller","grupo":"G6","seg":"S1","compras":33.77,"pedidos":206,"pctDesc":0.01,"meses":0,"cursos":0,"trim":4,"seg60":true,"aut":false,"ruta":false,"ultima":null,"base":32.06},{"ced":"9000000010","nombre":"Yeison Cardona Henao","ciudad":"Medellín","tipo":"taller","grupo":"G7","seg":"S1","compras":4.47,"pedidos":15,"pctDesc":0.43,"meses":1.5,"cursos":1,"trim":4,"seg60":true,"aut":false,"ruta":false,"ultima":null,"base":4.03},{"ced":"9000000011","nombre":"Mauricio Henao Ospina","ciudad":"Cali","tipo":"taller","grupo":"G7","seg":"S1","compras":3.88,"pedidos":18,"pctDesc":0.42,"meses":1.5,"cursos":1,"trim":2,"seg60":true,"aut":false,"ruta":false,"ultima":null,"base":3.67},{"ced":"9000000012","nombre":"Luz Ríos Cano","ciudad":"Cali","tipo":"taller","grupo":"G7","seg":"S1","compras":3.88,"pedidos":11,"pctDesc":0.35,"meses":1.5,"cursos":0,"trim":2,"seg60":true,"aut":false,"ruta":false,"ultima":null,"base":3.66},{"ced":"9000000013","nombre":"Mauricio Montoya Tobón","ciudad":"Ibagué","tipo":"taller","grupo":"G7","seg":"S1","compras":3.28,"pedidos":19,"pctDesc":0.44,"meses":1.5,"cursos":1,"trim":2,"seg60":false,"aut":false,"ruta":true,"ultima":null,"base":2.96},{"ced":"9000000014","nombre":"Yeison Cardona Zapata","ciudad":"Cali","tipo":"taller","grupo":"G7","seg":"S1","compras":4.22,"pedidos":17,"pctDesc":0.42,"meses":1.5,"cursos":1,"trim":4,"seg60":false,"aut":false,"ruta":false,"ultima":null,"base":3.62},{"ced":"9000000015","nombre":"Edison Arango Giraldo","ciudad":"Bucaramanga","tipo":"taller","grupo":"G7","seg":"S1","compras":3.89,"pedidos":20,"pctDesc":0.43,"meses":1.5,"cursos":1,"trim":4,"seg60":true,"aut":false,"ruta":false,"ultima":null,"base":3.65},{"ced":"9000000016","nombre":"Camilo Ospina Zapata","ciudad":"Cali","tipo":"independiente","grupo":"G5","seg":"S2","compras":3.1,"pedidos":20,"pctDesc":0.28,"meses":0.8,"cursos":1,"trim":3,"seg60":true,"aut":true,"ruta":false,"ultima":null,"base":2.82},{"ced":"9000000017","nombre":"Gustavo Restrepo Montoya","ciudad":"Cúcuta","tipo":"independiente","grupo":"G5","seg":"S2","compras":3.33,"pedidos":19,"pctDesc":0.36,"meses":0.8,"cursos":1,"trim":4,"seg60":true,"aut":true,"ruta":true,"ultima":null,"base":2.84},{"ced":"9000000018","nombre":"Luz Duque Londoño","ciudad":"Cúcuta","tipo":"independiente","grupo":"G5","seg":"S2","compras":3.14,"pedidos":13,"pctDesc":0.27,"meses":0.8,"cursos":2,"trim":3,"seg60":true,"aut":true,"ruta":false,"ultima":null,"base":2.55},{"ced":"9000000019","nombre":"Cristian Restrepo Gómez","ciudad":"Barranquilla","tipo":"independiente","grupo":"G5","seg":"S2","compras":2.68,"pedidos":23,"pctDesc":0.26,"meses":0.8,"cursos":2,"trim":2,"seg60":true,"aut":false,"ruta":true,"ultima":null,"base":2.3},{"ced":"9000000020","nombre":"Cristian Osorio Ospina","ciudad":"Ibagué","tipo":"independiente","grupo":"G5","seg":"S2","compras":2.64,"pedidos":18,"pctDesc":0.22,"meses":0.8,"cursos":1,"trim":2,"seg60":true,"aut":false,"ruta":true,"ultima":null,"base":2.33},{"ced":"9000000021","nombre":"Óscar Pineda Ríos","ciudad":"Cúcuta","tipo":"independiente","grupo":"G5","seg":"S2","compras":2.49,"pedidos":16,"pctDesc":0.27,"meses":0.8,"cursos":1,"trim":1,"seg60":true,"aut":true,"ruta":false,"ultima":null,"base":2.02},{"ced":"9000000022","nombre":"Andrés Arango Cardona","ciudad":"Cúcuta","tipo":"independiente","grupo":"G5","seg":"S2","compras":3.48,"pedidos":19,"pctDesc":0.27,"meses":0.8,"cursos":2,"trim":3,"seg60":true,"aut":false,"ruta":true,"ultima":null,"base":3.26},{"ced":"9000000023","nombre":"Fabio Restrepo Osorio","ciudad":"Ibagué","tipo":"independiente","grupo":"G5","seg":"S2","compras":3.44,"pedidos":19,"pctDesc":0.3,"meses":0.8,"cursos":1,"trim":2,"seg60":true,"aut":false,"ruta":false,"ultima":null,"base":2.83},{"ced":"9000000024","nombre":"Wilson Giraldo Mejía","ciudad":"Pereira","tipo":"independiente","grupo":"G4","seg":"S3","compras":1.3,"pedidos":5,"pctDesc":0.9,"meses":2.5,"cursos":0,"trim":1,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":1.21},{"ced":"9000000025","nombre":"Wilson Duque Ospina","ciudad":"Bucaramanga","tipo":"independiente","grupo":"G4","seg":"S3","compras":1.66,"pedidos":4,"pctDesc":0.88,"meses":2.5,"cursos":1,"trim":2,"seg60":true,"aut":false,"ruta":false,"ultima":null,"base":1.57},{"ced":"9000000026","nombre":"Rubén Salazar Montoya","ciudad":"Cali","tipo":"independiente","grupo":"G4","seg":"S3","compras":1.2,"pedidos":5,"pctDesc":0.8,"meses":2.5,"cursos":1,"trim":4,"seg60":true,"aut":true,"ruta":false,"ultima":null,"base":1.14},{"ced":"9000000027","nombre":"Wilson Ríos Giraldo","ciudad":"Cali","tipo":"independiente","grupo":"G4","seg":"S3","compras":1.5,"pedidos":2,"pctDesc":0.87,"meses":2.5,"cursos":0,"trim":2,"seg60":true,"aut":true,"ruta":false,"ultima":null,"base":1.39},{"ced":"9000000028","nombre":"Duván Osorio Tobón","ciudad":"Ibagué","tipo":"independiente","grupo":"G4","seg":"S3","compras":0.91,"pedidos":4,"pctDesc":0.87,"meses":2.5,"cursos":0,"trim":2,"seg60":false,"aut":false,"ruta":false,"ultima":null,"base":0.8},{"ced":"9000000029","nombre":"Hernán Restrepo Builes","ciudad":"Cartagena","tipo":"independiente","grupo":"G4","seg":"S3","compras":0.9,"pedidos":5,"pctDesc":0.88,"meses":2.5,"cursos":0,"trim":4,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0.85},{"ced":"9000000030","nombre":"Óscar Ospina Osorio","ciudad":"Cúcuta","tipo":"independiente","grupo":"G9","seg":"S3","compras":0.74,"pedidos":1,"pctDesc":0.19,"meses":7.3,"cursos":2,"trim":1,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0.67},{"ced":"9000000031","nombre":"Wilson Cardona Cardona","ciudad":"Barranquilla","tipo":"independiente","grupo":"G9","seg":"S3","compras":0.7,"pedidos":2,"pctDesc":0.22,"meses":7.3,"cursos":0,"trim":2,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0.63},{"ced":"9000000032","nombre":"Jhon Ríos Ospina","ciudad":"Bucaramanga","tipo":"independiente","grupo":"G9","seg":"S3","compras":0.96,"pedidos":1,"pctDesc":0.27,"meses":7.3,"cursos":0,"trim":2,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0.89},{"ced":"9000000033","nombre":"Julián Henao Ospina","ciudad":"Cúcuta","tipo":"independiente","grupo":"G9","seg":"S3","compras":0.92,"pedidos":2,"pctDesc":0.29,"meses":7.3,"cursos":1,"trim":1,"seg60":true,"aut":true,"ruta":false,"ultima":null,"base":0.83},{"ced":"9000000034","nombre":"Iván Giraldo Giraldo","ciudad":"Barranquilla","tipo":"independiente","grupo":"G1","seg":"S4","compras":0,"pedidos":0,"pctDesc":0,"meses":21.4,"cursos":0,"trim":0,"seg60":false,"aut":false,"ruta":false,"ultima":null,"base":0},{"ced":"9000000035","nombre":"Yeison Giraldo Pineda","ciudad":"Bucaramanga","tipo":"independiente","grupo":"G1","seg":"S4","compras":0,"pedidos":0,"pctDesc":0,"meses":21.4,"cursos":0,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000036","nombre":"Darío Ríos Restrepo","ciudad":"Medellín","tipo":"independiente","grupo":"G1","seg":"S4","compras":0,"pedidos":0,"pctDesc":0,"meses":21.4,"cursos":0,"trim":0,"seg60":false,"aut":false,"ruta":false,"ultima":null,"base":0},{"ced":"9000000037","nombre":"Néstor Henao Londoño","ciudad":"Bucaramanga","tipo":"independiente","grupo":"G1","seg":"S4","compras":0,"pedidos":0,"pctDesc":0,"meses":21.4,"cursos":0,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000038","nombre":"Leonardo Arango Vélez","ciudad":"Bogotá","tipo":"independiente","grupo":"G1","seg":"S4","compras":0,"pedidos":0,"pctDesc":0,"meses":21.4,"cursos":1,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000039","nombre":"Yeison Vélez Cardona","ciudad":"Cúcuta","tipo":"independiente","grupo":"G1","seg":"S4","compras":0,"pedidos":0,"pctDesc":0,"meses":21.4,"cursos":0,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000040","nombre":"Edison Arango Duque","ciudad":"Barranquilla","tipo":"taller","grupo":"G8","seg":"S4","compras":0,"pedidos":0,"pctDesc":0,"meses":16,"cursos":1,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000041","nombre":"Andrés Arango Arango","ciudad":"Cali","tipo":"taller","grupo":"G8","seg":"S4","compras":0,"pedidos":0,"pctDesc":0,"meses":16.1,"cursos":0,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000042","nombre":"Julián Cardona Montoya","ciudad":"Medellín","tipo":"taller","grupo":"G8","seg":"S4","compras":0,"pedidos":0,"pctDesc":0,"meses":16.1,"cursos":1,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000043","nombre":"Wilson Cano Henao","ciudad":"Bucaramanga","tipo":"taller","grupo":"G8","seg":"S4","compras":0,"pedidos":0,"pctDesc":0,"meses":16.1,"cursos":1,"trim":0,"seg60":false,"aut":false,"ruta":false,"ultima":null,"base":0},{"ced":"9000000044","nombre":"Mauricio Ospina Zapata","ciudad":"Cali","tipo":"taller","grupo":"G8","seg":"S4","compras":0,"pedidos":0,"pctDesc":0,"meses":16.1,"cursos":0,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000045","nombre":"Luz Pineda Tobón","ciudad":"Manizales","tipo":"independiente","grupo":"G3","seg":"S5","compras":0,"pedidos":0,"pctDesc":0,"meses":null,"cursos":0,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000046","nombre":"Edison Mejía Henao","ciudad":"Ibagué","tipo":"independiente","grupo":"G3","seg":"S5","compras":0,"pedidos":0,"pctDesc":0,"meses":null,"cursos":0,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000047","nombre":"Diana Arango Gómez","ciudad":"Cartagena","tipo":"independiente","grupo":"G3","seg":"S5","compras":0,"pedidos":0,"pctDesc":0,"meses":null,"cursos":0,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000048","nombre":"Jhon Gómez Giraldo","ciudad":"Ibagué","tipo":"independiente","grupo":"G3","seg":"S5","compras":0,"pedidos":0,"pctDesc":0,"meses":null,"cursos":0,"trim":0,"seg60":false,"aut":false,"ruta":false,"ultima":null,"base":0},{"ced":"9000000049","nombre":"Julián Builes Builes","ciudad":"Ibagué","tipo":"independiente","grupo":"G3","seg":"S5","compras":0,"pedidos":0,"pctDesc":0,"meses":null,"cursos":0,"trim":0,"seg60":false,"aut":false,"ruta":false,"ultima":null,"base":0},{"ced":"9000000050","nombre":"Camilo Londoño Cardona","ciudad":"Bogotá","tipo":"independiente","grupo":"G3","seg":"S5","compras":0,"pedidos":0,"pctDesc":0,"meses":null,"cursos":1,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000051","nombre":"Néstor Vélez Osorio","ciudad":"Bogotá","tipo":"independiente","grupo":"G11","seg":"S5","compras":0,"pedidos":0,"pctDesc":0,"meses":null,"cursos":2,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000052","nombre":"Andrés Ospina Giraldo","ciudad":"Manizales","tipo":"independiente","grupo":"G11","seg":"S5","compras":0,"pedidos":0,"pctDesc":0,"meses":null,"cursos":2,"trim":0,"seg60":false,"aut":true,"ruta":false,"ultima":null,"base":0},{"ced":"9000000053","nombre":"Edison Salazar Cardona","ciudad":"Bogotá","tipo":"independiente","grupo":"G11","seg":"S5","compras":0,"pedidos":0,"pctDesc":0,"meses":null,"cursos":2,"trim":0,"seg60":false,"aut":false,"ruta":false,"ultima":null,"base":0},{"ced":"9000000054","nombre":"Jhon Londoño Arango","ciudad":"Manizales","tipo":"independiente","grupo":"G11","seg":"S5","compras":0,"pedidos":0,"pctDesc":0,"meses":null,"cursos":2,"trim":0,"seg60":false,"aut":false,"ruta":false,"ultima":null,"base":0},{"ced":"9000000055","nombre":"Néstor Salazar Builes","ciudad":"Medellín","tipo":"cadena","grupo":"G10","seg":"S6","compras":4.6,"pedidos":16,"pctDesc":0.2,"meses":0.8,"cursos":2,"trim":4,"seg60":true,"aut":true,"ruta":true,"ultima":null,"base":4.6},{"ced":"9000000056","nombre":"Cristian Tobón Montoya","ciudad":"Pereira","tipo":"cadena","grupo":"G10","seg":"S6","compras":3.77,"pedidos":18,"pctDesc":0.18,"meses":0.8,"cursos":2,"trim":4,"seg60":true,"aut":false,"ruta":true,"ultima":null,"base":3.77},{"ced":"9000000057","nombre":"Julián Vélez Gómez","ciudad":"Cartagena","tipo":"cadena","grupo":"G10","seg":"S6","compras":4.83,"pedidos":12,"pctDesc":0.18,"meses":0.8,"cursos":1,"trim":1,"seg60":true,"aut":false,"ruta":false,"ultima":null,"base":4.83},{"ced":"9000000058","nombre":"Duván Builes Duque","ciudad":"Cúcuta","tipo":"cadena","grupo":"G10","seg":"S6","compras":2.79,"pedidos":12,"pctDesc":0.23,"meses":0.8,"cursos":1,"trim":4,"seg60":true,"aut":false,"ruta":true,"ultima":null,"base":2.79},{"ced":"9000000059","nombre":"Jhon Henao Zapata","ciudad":"Bucaramanga","tipo":"cadena","grupo":"G10","seg":"S6","compras":5.45,"pedidos":17,"pctDesc":0.17,"meses":0.8,"cursos":2,"trim":1,"seg60":false,"aut":false,"ruta":false,"ultima":null,"base":5.45},{"ced":"9000000060","nombre":"Andrés Henao Duque","ciudad":"Bucaramanga","tipo":"cadena","grupo":"G10","seg":"S6","compras":5.29,"pedidos":13,"pctDesc":0.25,"meses":0.8,"cursos":0,"trim":3,"seg60":true,"aut":false,"ruta":true,"ultima":null,"base":5.29}];
+  var NIV_N = ["", "Registrado", "Aliado", "Certificado", "Aliado VIP"];
+  var RATE = [0, 0.05, 0.10, 0.15, 0.20];
+  var TICKET = 0.1936; // ticket promedio del caso, $M
+  var SEG_N = { S1: "Taller de alto valor", S2: "Independiente frecuente", S3: "Independiente de compra por oferta", S4: "Ex-comprador (hace tiempo no compra)", S5: "Registrado sin compras", S6: "Técnico de cadena" };
+  var TIPO_N = { independiente: "Independiente", taller: "Taller con ayudantes", cadena: "Técnico de cadena" };
+  function cop(m) { return "$" + Math.round(m * 1000000).toLocaleString("es-CO"); }
+  function findCli(ced) { var c = String(ced || "").replace(/\D/g, ""); return DATA.filter(function (x) { return x.ced === c; })[0] || null; }
+  function evalCli(c) {
+    var comprador = c.compras > 0;
+    var k = {
+      seg60: { t: "Segunda compra dentro de 60 días", ok: !!c.seg60 },
+      trim2: { t: "Compras en dos trimestres seguidos", ok: c.trim >= 2 },
+      aut: { t: "Autorización de datos vigente", ok: !!c.aut },
+      ruta: { t: "Ruta Especialista aprobada", ok: !!c.ruta },
+      desc: { t: "Menos de 25% de tus pedidos con descuento", ok: comprador && c.pctDesc < 0.25 },
+      trim4: { t: "Compras en cuatro trimestres seguidos", ok: c.trim >= 4 }
+    };
+    var s6 = c.seg === "S6", nivel;
+    if (s6) nivel = (k.aut.ok && k.ruta.ok) ? 3 : 1;
+    else {
+      var a = comprador && c.pedidos >= 2 && k.trim2.ok && k.seg60.ok && k.aut.ok;
+      var ce = a && k.ruta.ok && k.desc.ok;
+      nivel = (ce && k.trim4.ok) ? 4 : ce ? 3 : a ? 2 : 1;
+    }
+    var meta = [], objetivo = 0;
+    if (s6) { if (nivel < 3) { objetivo = 3; meta = [k.ruta, k.aut]; } }
+    else if (nivel === 1) { objetivo = 2; meta = comprador ? [k.seg60, k.trim2, k.aut] : [{ t: "Hacer tu primera compra", ok: false }, k.aut]; }
+    else if (nivel === 2) { objetivo = 3; meta = [k.ruta, k.desc]; }
+    else if (nivel === 3) { objetivo = 4; meta = [k.trim4]; }
+    var rate = s6 ? 0 : RATE[nivel];
+    return { nivel: nivel, k: k, meta: meta, objetivo: objetivo, rate: rate, bono: s6 ? 0 : (nivel === 1 ? (c.aut ? rate * TICKET : 0) : rate * Math.max(0, c.compras - (c.base || 0))), comprador: comprador };
+  }
+  function perfilHtml(c) {
+    var e = evalCli(c), s6 = c.seg === "S6";
+    var steps = [1, 2, 3, 4].map(function (n) {
+      var on = n <= e.nivel;
+      return '<li class="st' + (on ? ' on' : '') + (n === e.nivel ? ' cur' : '') + '"><span>' + n + '</span><small>' + NIV_N[n] + '</small></li>';
+    }).join("");
+    var h = '<div class="perfil"><div class="who"><b>' + esc(c.nombre.split(" ")[0]) + ', ' + esc(c.ciudad) + '</b><span>' + esc(TIPO_N[c.tipo]) + ' · ' + esc(SEG_N[c.seg]) + '</span></div>' +
+      '<div class="levelbig"><div class="n">' + e.nivel + '</div><div><b>Nivel ' + esc(NIV_N[e.nivel]) + (s6 && e.nivel === 3 ? ' de cadena' : '') + '</b><br><span class="hint">Calculado con tu historial de facturación (datos ficticios del piloto).</span></div></div>' +
+      '<ol class="stepper" aria-label="Tu nivel en la escalera">' + steps + '</ol>' +
+      '<div class="kv"><div><small>Compras 12 meses</small><b>' + (c.compras ? cop(c.compras) : "$0") + '</b></div><div><small>12 meses anteriores</small><b>' + (c.base ? cop(c.base) : "$0") + '</b></div><div><small>Pedidos</small><b>' + c.pedidos + '</b></div><div><small>Pedidos con descuento</small><b>' + (c.compras ? Math.round(c.pctDesc * 100) + "%" : "—") + '</b></div></div>';
+    if (e.objetivo) {
+      h += '<h3>Para llegar a ' + esc(NIV_N[e.objetivo]) + (s6 ? ' de cadena' : '') + '</h3><ul class="checks">' + e.meta.map(function (m) { return '<li class="' + (m.ok ? 'ok' : 'no') + '"><span aria-hidden="true">' + (m.ok ? '✓' : '○') + '</span> ' + esc(m.t) + '<em>' + (m.ok ? ' · cumplido' : ' · falta') + '</em></li>'; }).join("") + '</ul>';
+    } else {
+      h += '<div class="notice good">Estás en el nivel más alto. Mantén tus compras y tu autorización vigentes.</div>';
+    }
+    if (s6) h += '<div class="notice warn">Como técnico de cadena tu reconocimiento es por certificación y soporte técnico directo. No hay puntos ni bonos, porque tu cadena es quien compra.</div>';
+    else if (e.nivel === 1) h += c.aut ? '<div class="bono"><small>Bono de bienvenida estimado (demostración)</small><b>' + cop(e.bono) + '</b><span class="hint">5% de tu primera compra después de registrarte, calculado con el ticket promedio de $194 mil. Se entrega en repuesto o herramienta. Tope y condiciones por definir. Al llegar a Aliado, tu bono pasa a 10% sobre lo que compres de más.</span></div>' : '<div class="notice warn">Tu bono de bienvenida del 5% se activa con una autorización de datos vigente.</div>';
+    else h += '<div class="bono"><small>Bono de continuidad estimado (demostración)</small><b>' + cop(e.bono) + '</b><span class="hint">' + Math.round(e.rate * 100) + '% sobre lo que compres de más frente a tus 12 meses anteriores (' + cop(c.base || 0) + ' antes, ' + cop(c.compras) + ' ahora). Se entrega en repuesto o herramienta, no como rebaja de precio. Condiciones por definir y publicar.</span></div>';
+    if (!c.aut && e.nivel === 1 && !s6) h += '<div class="notice warn">Sin autorización de datos vigente no puedes subir de nivel. Actualízala en el distribuidor o en este formulario.</div>';
+    return h + '</div>';
+  }
+  function pruebaHtml() {
+    var casos = [
+      ["9000000001", "Taller de alto valor en el nivel más alto"],
+      ["9000000002", "Taller en Certificado"],
+      ["9000000016", "Independiente frecuente en Aliado"],
+      ["9000000024", "Independiente de compra por oferta, en Registrado"],
+      ["9000000040", "Ex-comprador, sin compras en 12 meses"],
+      ["9000000045", "Registrado que nunca ha comprado"],
+      ["9000000055", "Técnico de cadena certificado"]
+    ];
+    return '<details class="prueba"><summary>Cédulas de prueba (ficticias)</summary><p class="hint">Escribe una de estas para ver cómo cambia la pantalla. No corresponden a personas reales.</p><table><tbody>' + casos.map(function (x) { return '<tr><td><button type="button" class="linkbtn" data-fill="' + x[0] + '">' + x[0] + '</button></td><td>' + esc(x[1]) + '</td></tr>'; }).join("") + '</tbody></table></details>';
+  }
+
+  function viewStep() {
+    var d = S.d, h = "";
+    if (S.step === 0) {
+      h = '<h1>Regístrate en Aliados Haceb</h1><p class="sub" style="margin-top:8px">Cinco pasos cortos, menos de dos minutos. Solo el primer paso de datos y tu autorización son obligatorios.</p>' +
+        '<div class="field"><span class="lab">¿Dónde te estás registrando?</span>' + chips("origen", ORIGENES, false) + '</div>' +
+        '<div class="row-btn"><button type="button" class="btn primary" data-go="next">Empezar</button></div>';
+    } else if (S.step === 1) {
+      h = stepHead(1, "Tus datos", "Para saber quién eres y dónde estás.") +
+        '<div class="field"><label for="f-nombre">Nombre completo</label><input id="f-nombre" type="text" autocomplete="name" data-in="nombre" value="' + esc(d.nombre) + '">' + err("nombre") + '</div>' +
+        '<div class="field"><label for="f-celular">Celular <span class="hint">el mismo de tu WhatsApp</span></label><input id="f-celular" type="tel" inputmode="numeric" autocomplete="tel" placeholder="3001234567" data-in="celular" value="' + esc(d.celular) + '">' + err("celular") + '</div>' +
+        '<div class="field"><label for="f-ciudad">Ciudad</label><input id="f-ciudad" type="text" list="ciudades" autocomplete="address-level2" data-in="ciudad" value="' + esc(d.ciudad) + '"><datalist id="ciudades"><option value="Medellín"><option value="Bogotá"><option value="Cali"><option value="Barranquilla"><option value="Bucaramanga"><option value="Cartagena"><option value="Pereira"></datalist>' + err("ciudad") + '</div>' +
+        '<div class="field"><span class="lab">¿Cómo trabajas?</span><div class="options">' + TIPOS.map(function (t) {
+          return '<button type="button" class="opt" data-chip="tipo" data-multi="0" data-val="' + t.id + '" aria-pressed="' + (d.tipo === t.id) + '"><b>' + t.t + '</b><small>' + t.s + '</small></button>';
+        }).join("") + '</div>' + err("tipo") + '</div>';
+      if (d.tipo === "cadena") h += '<div class="field"><label for="f-cadena">¿De qué cadena? <span class="hint">opcional</span></label><input id="f-cadena" type="text" data-in="cadena" value="' + esc(d.cadena) + '"></div>';
+      if (d.tipo === "taller") h += '<div class="field"><span class="lab">¿Cuántos ayudantes tienes? <span class="hint">opcional</span></span>' + chips("ayudantes", AYUDANTES, false) + '</div>';
+      h += nav(true, "Siguiente");
+    } else if (S.step === 2) {
+      h = stepHead(2, "Tu trabajo", "Todo es opcional. Nos sirve para enviarte solo lo que te ayuda.") +
+        '<div class="field"><span class="lab">¿Qué equipos atiendes?</span>' + chips("equipos", EQUIPOS, true) + '</div>' +
+        '<div class="field"><span class="lab">¿Qué clientes tienes?</span>' + chips("clientes", CLIENTES, true) + '</div>' +
+        '<div class="field"><span class="lab">¿Cuánta experiencia tienes?</span>' + chips("experiencia", EXPERIENCIA, false) + '</div>' +
+        '<div class="field"><span class="lab">¿Cada cuánto compras repuestos?</span>' + chips("frecuencia", FRECUENCIA, false, function (x) { return x.id; }, function (x) { return x.t; }) + '</div>' +
+        '<div class="field"><label for="f-dist">Distribuidor donde compras <span class="hint">opcional</span></label><input id="f-dist" type="text" data-in="distribuidor" value="' + esc(d.distribuidor) + '"></div>' +
+        '<div class="field"><span class="lab">¿Qué te hace perder más tiempo? <span class="hint">elige hasta 2</span></span>' + chips("dolores", DOLORES, true, function (x) { return x.id; }, function (x) { return x.t; }) + '</div>' + nav(true, "Siguiente");
+    } else if (S.step === 3) {
+      h = stepHead(3, "Qué te sirve recibir", "Tú eliges tema, formato y hora.") +
+        '<div class="field"><span class="lab">Temas</span>' + chips("temas", TEMAS, true, function (x) { return x.id; }, function (x) { return x.t; }) + '</div>' +
+        '<div class="field"><span class="lab">Formato preferido</span>' + chips("formato", FORMATOS, false) + '</div>' +
+        '<div class="field"><span class="lab">¿A qué hora te escribimos?</span>' + chips("horario", HORARIOS, false) + '<span class="hint">Solo entre semana de 7:00 a. m. a 7:00 p. m.</span></div>' + nav(true, "Siguiente");
+    } else if (S.step === 4) {
+      h = stepHead(4, "Tus autorizaciones", "Tú decides qué autorizas. Puedes cambiarlo cuando quieras.") +
+        '<div class="consent"><input type="checkbox" id="c-datos" data-chk="consentDatos"' + (d.consentDatos ? " checked" : "") + '><label class="t" for="c-datos"><b>Tratamiento de mis datos <span class="tag req">Obligatoria</span></b>Autorizo a Haceb a usar mis datos para administrar mi registro, atender mis solicitudes y medir el programa, según la política de tratamiento de datos.</label></div>' +
+        '<div class="consent"><input type="checkbox" id="c-wa" data-chk="consentWhatsapp"' + (d.consentWhatsapp ? " checked" : "") + '><label class="t" for="c-wa"><b>Mensajes por WhatsApp <span class="tag nop">Opcional</span></b>Quiero recibir información técnica y comercial por WhatsApp al número que registré. Puedo dejar de recibirla respondiendo BAJA.</label></div>' +
+        '<div class="consent"><input type="checkbox" id="c-dir" data-chk="consentDirectorio"' + (d.consentDirectorio ? " checked" : "") + '><label class="t" for="c-dir"><b>Aparecer en el directorio <span class="tag nop">Opcional</span></b>Si me certifico, quiero que mi nombre, ciudad y contacto aparezcan en el directorio de técnicos para clientes finales.</label></div>' +
+        err("consent") +
+        '<div class="legal">Texto de demostración, versión ' + VERSION_TEXTO + '. Antes de publicar, Legal debe aprobar el texto, la política de tratamiento de datos y el canal para ejercer derechos. Se guarda la fecha, el origen y la versión del texto de cada autorización.</div>' +
+        nav(true, "Terminar registro");
+    } else {
+      var r = S.last, p = plan(r);
+      h = '<h2>Listo, ' + esc(r.nombre.split(" ")[0]) + '</h2><p class="sub">Quedaste registrado en Aliados Haceb.</p>' +
+        '<div class="level"><div class="n">1</div><div><b>Nivel Registrado</b><br><span class="hint">Para llegar a Aliado: segunda compra en 60 días, dos trimestres seguidos, con autorización vigente.</span></div></div>' +
+        '<h3>Tu serie: ' + esc(p.serie.nombre) + '</h3><p class="sub" style="margin-bottom:10px">' + esc(p.serie.foco) + ' · Canal: ' + esc(p.canal) + '</p>' +
+        '<ul class="week">' + p.piezas.map(function (x) { return '<li><div class="d">' + esc(x.dia) + '</div>' + esc(x.titulo) + '<div class="s">' + esc(x.canal) + (x.nota ? ' · ' + esc(x.nota) : '') + '</div></li>'; }).join("") + '</ul>' +
+        (p.wa ? '<h3>Tu primer mensaje</h3><div class="chat"><div class="bubble">' + esc(welcome(r)) + '</div><div class="meta">Vista previa · ' + esc(r.horario || "en el horario permitido") + '</div></div>'
+          : '<div class="notice warn">No autorizaste WhatsApp. No te escribiremos por ese canal. Puedes activarlo cuando quieras en el distribuidor o en este formulario.</div>') +
+        '<div class="row-btn"><button type="button" class="btn" data-go="escalera">Ver mi escalera a VIP</button><button type="button" class="btn primary" data-go="again">Registrar a otro técnico</button></div>';
+    }
+    return '<div class="app card">' + h + '</div>';
+  }
+
+
+  var QR_URL = "https://veroroca2003-debug.github.io/aliados-haceb/";
+  var QR_PATH = "M4 4h7v1h-7zM14 4h1v1h-1zM16 4h3v1h-3zM20 4h5v1h-5zM27 4h1v1h-1zM30 4h7v1h-7zM4 5h1v1h-1zM10 5h1v1h-1zM13 5h2v1h-2zM16 5h6v1h-6zM24 5h3v1h-3zM28 5h1v1h-1zM30 5h1v1h-1zM36 5h1v1h-1zM4 6h1v1h-1zM6 6h3v1h-3zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM17 6h1v1h-1zM19 6h1v1h-1zM21 6h2v1h-2zM24 6h5v1h-5zM30 6h1v1h-1zM32 6h3v1h-3zM36 6h1v1h-1zM4 7h1v1h-1zM6 7h3v1h-3zM10 7h1v1h-1zM12 7h1v1h-1zM15 7h1v1h-1zM18 7h1v1h-1zM20 7h1v1h-1zM23 7h1v1h-1zM26 7h1v1h-1zM28 7h1v1h-1zM30 7h1v1h-1zM32 7h3v1h-3zM36 7h1v1h-1zM4 8h1v1h-1zM6 8h3v1h-3zM10 8h1v1h-1zM12 8h1v1h-1zM16 8h1v1h-1zM19 8h1v1h-1zM22 8h1v1h-1zM27 8h2v1h-2zM30 8h1v1h-1zM32 8h3v1h-3zM36 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM12 9h3v1h-3zM18 9h3v1h-3zM26 9h1v1h-1zM30 9h1v1h-1zM36 9h1v1h-1zM4 10h7v1h-7zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h7v1h-7zM12 11h1v1h-1zM14 11h1v1h-1zM16 11h1v1h-1zM19 11h1v1h-1zM22 11h1v1h-1zM25 11h4v1h-4zM4 12h1v1h-1zM6 12h5v1h-5zM13 12h2v1h-2zM17 12h3v1h-3zM21 12h1v1h-1zM26 12h1v1h-1zM30 12h5v1h-5zM9 13h1v1h-1zM11 13h3v1h-3zM15 13h2v1h-2zM20 13h1v1h-1zM22 13h2v1h-2zM27 13h1v1h-1zM30 13h2v1h-2zM33 13h2v1h-2zM36 13h1v1h-1zM5 14h3v1h-3zM9 14h4v1h-4zM15 14h1v1h-1zM19 14h2v1h-2zM22 14h1v1h-1zM24 14h2v1h-2zM29 14h2v1h-2zM32 14h1v1h-1zM34 14h1v1h-1zM4 15h1v1h-1zM6 15h3v1h-3zM11 15h2v1h-2zM14 15h1v1h-1zM16 15h1v1h-1zM18 15h1v1h-1zM20 15h1v1h-1zM23 15h1v1h-1zM25 15h1v1h-1zM27 15h1v1h-1zM32 15h3v1h-3zM36 15h1v1h-1zM5 16h3v1h-3zM10 16h2v1h-2zM13 16h2v1h-2zM16 16h1v1h-1zM19 16h1v1h-1zM22 16h1v1h-1zM26 16h2v1h-2zM29 16h1v1h-1zM31 16h3v1h-3zM5 17h1v1h-1zM7 17h2v1h-2zM11 17h1v1h-1zM13 17h3v1h-3zM17 17h4v1h-4zM25 17h1v1h-1zM27 17h1v1h-1zM30 17h1v1h-1zM33 17h1v1h-1zM35 17h2v1h-2zM8 18h3v1h-3zM14 18h3v1h-3zM18 18h1v1h-1zM24 18h1v1h-1zM29 18h2v1h-2zM35 18h1v1h-1zM4 19h1v1h-1zM9 19h1v1h-1zM12 19h1v1h-1zM14 19h3v1h-3zM18 19h1v1h-1zM20 19h1v1h-1zM23 19h5v1h-5zM29 19h3v1h-3zM33 19h2v1h-2zM4 20h4v1h-4zM10 20h2v1h-2zM15 20h1v1h-1zM17 20h1v1h-1zM21 20h1v1h-1zM23 20h2v1h-2zM26 20h4v1h-4zM31 20h2v1h-2zM36 20h1v1h-1zM4 21h1v1h-1zM6 21h3v1h-3zM12 21h1v1h-1zM15 21h1v1h-1zM18 21h1v1h-1zM20 21h4v1h-4zM25 21h1v1h-1zM27 21h1v1h-1zM29 21h3v1h-3zM33 21h2v1h-2zM36 21h1v1h-1zM4 22h1v1h-1zM6 22h1v1h-1zM8 22h3v1h-3zM12 22h2v1h-2zM15 22h1v1h-1zM17 22h3v1h-3zM21 22h1v1h-1zM25 22h1v1h-1zM28 22h1v1h-1zM30 22h3v1h-3zM34 22h2v1h-2zM7 23h1v1h-1zM11 23h1v1h-1zM20 23h3v1h-3zM25 23h5v1h-5zM31 23h5v1h-5zM4 24h3v1h-3zM8 24h1v1h-1zM10 24h4v1h-4zM15 24h2v1h-2zM18 24h1v1h-1zM20 24h1v1h-1zM26 24h1v1h-1zM28 24h2v1h-2zM31 24h3v1h-3zM35 24h1v1h-1zM4 25h4v1h-4zM13 25h1v1h-1zM15 25h3v1h-3zM19 25h1v1h-1zM22 25h2v1h-2zM25 25h1v1h-1zM27 25h1v1h-1zM30 25h1v1h-1zM36 25h1v1h-1zM4 26h1v1h-1zM8 26h3v1h-3zM12 26h1v1h-1zM14 26h3v1h-3zM19 26h4v1h-4zM25 26h1v1h-1zM28 26h2v1h-2zM32 26h4v1h-4zM4 27h1v1h-1zM7 27h1v1h-1zM14 27h1v1h-1zM19 27h1v1h-1zM22 27h2v1h-2zM25 27h2v1h-2zM30 27h1v1h-1zM32 27h5v1h-5zM4 28h1v1h-1zM6 28h1v1h-1zM9 28h2v1h-2zM12 28h1v1h-1zM14 28h1v1h-1zM16 28h1v1h-1zM19 28h1v1h-1zM21 28h1v1h-1zM24 28h1v1h-1zM28 28h5v1h-5zM12 29h1v1h-1zM23 29h1v1h-1zM25 29h4v1h-4zM32 29h1v1h-1zM34 29h3v1h-3zM4 30h7v1h-7zM13 30h1v1h-1zM15 30h1v1h-1zM17 30h1v1h-1zM19 30h2v1h-2zM22 30h1v1h-1zM27 30h2v1h-2zM30 30h1v1h-1zM32 30h1v1h-1zM34 30h2v1h-2zM4 31h1v1h-1zM10 31h1v1h-1zM12 31h2v1h-2zM16 31h1v1h-1zM20 31h1v1h-1zM25 31h4v1h-4zM32 31h3v1h-3zM4 32h1v1h-1zM6 32h3v1h-3zM10 32h1v1h-1zM12 32h5v1h-5zM19 32h1v1h-1zM22 32h1v1h-1zM26 32h1v1h-1zM28 32h6v1h-6zM36 32h1v1h-1zM4 33h1v1h-1zM6 33h3v1h-3zM10 33h1v1h-1zM12 33h2v1h-2zM15 33h1v1h-1zM17 33h4v1h-4zM23 33h3v1h-3zM27 33h3v1h-3zM32 33h2v1h-2zM35 33h2v1h-2zM4 34h1v1h-1zM6 34h3v1h-3zM10 34h1v1h-1zM12 34h3v1h-3zM17 34h2v1h-2zM24 34h1v1h-1zM27 34h2v1h-2zM30 34h2v1h-2zM33 34h1v1h-1zM4 35h1v1h-1zM10 35h1v1h-1zM18 35h1v1h-1zM20 35h1v1h-1zM24 35h2v1h-2zM32 35h1v1h-1zM34 35h1v1h-1zM4 36h7v1h-7zM12 36h6v1h-6zM21 36h1v1h-1zM24 36h1v1h-1zM27 36h3v1h-3zM31 36h1v1h-1zM35 36h1v1h-1z";
+  var QR_SIZE = 41;
+  var QR2_URL = "https://veroroca2003-debug.github.io/aliados-haceb/panel-interno.html", QR2_PATH = "M4 4h7v1h-7zM12 4h2v1h-2zM15 4h2v1h-2zM20 4h2v1h-2zM23 4h2v1h-2zM27 4h1v1h-1zM29 4h4v1h-4zM34 4h7v1h-7zM4 5h1v1h-1zM10 5h1v1h-1zM13 5h1v1h-1zM15 5h2v1h-2zM19 5h3v1h-3zM23 5h1v1h-1zM26 5h1v1h-1zM28 5h3v1h-3zM32 5h1v1h-1zM34 5h1v1h-1zM40 5h1v1h-1zM4 6h1v1h-1zM6 6h3v1h-3zM10 6h1v1h-1zM13 6h1v1h-1zM17 6h1v1h-1zM21 6h1v1h-1zM25 6h1v1h-1zM27 6h2v1h-2zM30 6h3v1h-3zM34 6h1v1h-1zM36 6h3v1h-3zM40 6h1v1h-1zM4 7h1v1h-1zM6 7h3v1h-3zM10 7h1v1h-1zM12 7h3v1h-3zM18 7h1v1h-1zM20 7h1v1h-1zM22 7h1v1h-1zM27 7h3v1h-3zM32 7h1v1h-1zM34 7h1v1h-1zM36 7h3v1h-3zM40 7h1v1h-1zM4 8h1v1h-1zM6 8h3v1h-3zM10 8h1v1h-1zM12 8h3v1h-3zM16 8h2v1h-2zM21 8h2v1h-2zM24 8h2v1h-2zM27 8h1v1h-1zM31 8h2v1h-2zM34 8h1v1h-1zM36 8h3v1h-3zM40 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM12 9h2v1h-2zM16 9h2v1h-2zM19 9h3v1h-3zM23 9h2v1h-2zM26 9h1v1h-1zM28 9h1v1h-1zM32 9h1v1h-1zM34 9h1v1h-1zM40 9h1v1h-1zM4 10h7v1h-7zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h1v1h-1zM32 10h1v1h-1zM34 10h7v1h-7zM12 11h1v1h-1zM18 11h3v1h-3zM23 11h1v1h-1zM25 11h1v1h-1zM32 11h1v1h-1zM4 12h1v1h-1zM8 12h1v1h-1zM10 12h3v1h-3zM16 12h5v1h-5zM23 12h4v1h-4zM33 12h5v1h-5zM40 12h1v1h-1zM5 13h2v1h-2zM12 13h1v1h-1zM15 13h4v1h-4zM21 13h3v1h-3zM27 13h1v1h-1zM29 13h1v1h-1zM31 13h3v1h-3zM36 13h4v1h-4zM4 14h1v1h-1zM7 14h1v1h-1zM9 14h2v1h-2zM12 14h4v1h-4zM18 14h2v1h-2zM21 14h1v1h-1zM23 14h1v1h-1zM27 14h1v1h-1zM29 14h1v1h-1zM31 14h1v1h-1zM35 14h2v1h-2zM38 14h1v1h-1zM7 15h1v1h-1zM13 15h1v1h-1zM17 15h9v1h-9zM27 15h1v1h-1zM31 15h1v1h-1zM33 15h4v1h-4zM38 15h2v1h-2zM6 16h3v1h-3zM10 16h2v1h-2zM13 16h1v1h-1zM15 16h1v1h-1zM17 16h1v1h-1zM21 16h1v1h-1zM24 16h2v1h-2zM27 16h2v1h-2zM30 16h2v1h-2zM33 16h2v1h-2zM38 16h3v1h-3zM6 17h2v1h-2zM13 17h1v1h-1zM15 17h1v1h-1zM18 17h3v1h-3zM22 17h1v1h-1zM25 17h1v1h-1zM27 17h1v1h-1zM29 17h1v1h-1zM31 17h2v1h-2zM36 17h2v1h-2zM4 18h2v1h-2zM8 18h1v1h-1zM10 18h2v1h-2zM13 18h2v1h-2zM16 18h1v1h-1zM18 18h2v1h-2zM21 18h1v1h-1zM24 18h2v1h-2zM27 18h2v1h-2zM30 18h2v1h-2zM33 18h1v1h-1zM35 18h5v1h-5zM4 19h1v1h-1zM6 19h3v1h-3zM11 19h3v1h-3zM17 19h6v1h-6zM24 19h5v1h-5zM33 19h1v1h-1zM35 19h2v1h-2zM38 19h1v1h-1zM40 19h1v1h-1zM4 20h2v1h-2zM7 20h1v1h-1zM10 20h1v1h-1zM12 20h1v1h-1zM14 20h2v1h-2zM22 20h2v1h-2zM28 20h1v1h-1zM31 20h1v1h-1zM33 20h3v1h-3zM37 20h2v1h-2zM40 20h1v1h-1zM5 21h3v1h-3zM9 21h1v1h-1zM12 21h1v1h-1zM14 21h1v1h-1zM17 21h2v1h-2zM20 21h2v1h-2zM23 21h3v1h-3zM27 21h1v1h-1zM29 21h3v1h-3zM35 21h2v1h-2zM38 21h2v1h-2zM8 22h1v1h-1zM10 22h3v1h-3zM15 22h3v1h-3zM20 22h1v1h-1zM22 22h1v1h-1zM24 22h1v1h-1zM27 22h1v1h-1zM31 22h2v1h-2zM36 22h3v1h-3zM13 23h1v1h-1zM16 23h3v1h-3zM21 23h2v1h-2zM25 23h2v1h-2zM28 23h1v1h-1zM31 23h1v1h-1zM38 23h2v1h-2zM4 24h4v1h-4zM10 24h2v1h-2zM17 24h3v1h-3zM21 24h3v1h-3zM25 24h4v1h-4zM30 24h2v1h-2zM33 24h3v1h-3zM38 24h1v1h-1zM4 25h1v1h-1zM6 25h1v1h-1zM9 25h1v1h-1zM12 25h3v1h-3zM19 25h4v1h-4zM27 25h1v1h-1zM29 25h1v1h-1zM31 25h3v1h-3zM35 25h2v1h-2zM39 25h1v1h-1zM9 26h2v1h-2zM12 26h1v1h-1zM15 26h1v1h-1zM17 26h1v1h-1zM19 26h1v1h-1zM22 26h1v1h-1zM25 26h3v1h-3zM30 26h4v1h-4zM35 26h4v1h-4zM7 27h2v1h-2zM11 27h1v1h-1zM13 27h2v1h-2zM19 27h2v1h-2zM25 27h4v1h-4zM30 27h1v1h-1zM32 27h1v1h-1zM35 27h2v1h-2zM38 27h1v1h-1zM40 27h1v1h-1zM4 28h1v1h-1zM6 28h2v1h-2zM9 28h4v1h-4zM14 28h3v1h-3zM18 28h3v1h-3zM24 28h1v1h-1zM28 28h1v1h-1zM33 28h3v1h-3zM37 28h3v1h-3zM4 29h1v1h-1zM15 29h3v1h-3zM21 29h3v1h-3zM27 29h3v1h-3zM31 29h2v1h-2zM36 29h1v1h-1zM6 30h1v1h-1zM8 30h3v1h-3zM14 30h1v1h-1zM18 30h2v1h-2zM22 30h2v1h-2zM27 30h2v1h-2zM31 30h1v1h-1zM33 30h1v1h-1zM35 30h1v1h-1zM38 30h1v1h-1zM6 31h2v1h-2zM12 31h14v1h-14zM28 31h1v1h-1zM31 31h1v1h-1zM33 31h3v1h-3zM38 31h1v1h-1zM4 32h2v1h-2zM7 32h1v1h-1zM10 32h1v1h-1zM13 32h3v1h-3zM21 32h1v1h-1zM24 32h5v1h-5zM30 32h1v1h-1zM32 32h5v1h-5zM38 32h3v1h-3zM12 33h1v1h-1zM15 33h1v1h-1zM17 33h1v1h-1zM19 33h2v1h-2zM22 33h1v1h-1zM25 33h1v1h-1zM27 33h1v1h-1zM29 33h1v1h-1zM31 33h2v1h-2zM36 33h1v1h-1zM4 34h7v1h-7zM12 34h1v1h-1zM15 34h1v1h-1zM17 34h5v1h-5zM27 34h3v1h-3zM32 34h1v1h-1zM34 34h1v1h-1zM36 34h1v1h-1zM4 35h1v1h-1zM10 35h1v1h-1zM13 35h1v1h-1zM16 35h1v1h-1zM18 35h2v1h-2zM21 35h2v1h-2zM24 35h1v1h-1zM26 35h3v1h-3zM32 35h1v1h-1zM36 35h4v1h-4zM4 36h1v1h-1zM6 36h3v1h-3zM10 36h1v1h-1zM12 36h1v1h-1zM14 36h3v1h-3zM19 36h1v1h-1zM22 36h2v1h-2zM26 36h3v1h-3zM32 36h9v1h-9zM4 37h1v1h-1zM6 37h3v1h-3zM10 37h1v1h-1zM14 37h2v1h-2zM17 37h1v1h-1zM20 37h1v1h-1zM23 37h3v1h-3zM27 37h1v1h-1zM29 37h7v1h-7zM40 37h1v1h-1zM4 38h1v1h-1zM6 38h3v1h-3zM10 38h1v1h-1zM14 38h1v1h-1zM16 38h2v1h-2zM20 38h2v1h-2zM24 38h4v1h-4zM29 38h1v1h-1zM33 38h2v1h-2zM4 39h1v1h-1zM10 39h1v1h-1zM15 39h3v1h-3zM21 39h2v1h-2zM25 39h1v1h-1zM28 39h1v1h-1zM30 39h2v1h-2zM34 39h1v1h-1zM36 39h1v1h-1zM38 39h2v1h-2zM4 40h7v1h-7zM12 40h2v1h-2zM16 40h4v1h-4zM21 40h1v1h-1zM23 40h1v1h-1zM25 40h4v1h-4zM30 40h2v1h-2zM35 40h1v1h-1zM38 40h3v1h-3z", QR2_SIZE = 45;
+  function qrSvg2() {
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + QR2_SIZE + ' ' + QR2_SIZE + '" role="img" aria-label="Código QR del panel interno" shape-rendering="crispEdges"><rect width="' + QR2_SIZE + '" height="' + QR2_SIZE + '" fill="#fff"/><path d="' + QR2_PATH + '" fill="#000"/></svg>';
+  }
+  function qrSvg() {
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + QR_SIZE + ' ' + QR_SIZE + '" role="img" aria-label="Código QR de Aliados Haceb" shape-rendering="crispEdges"><rect width="' + QR_SIZE + '" height="' + QR_SIZE + '" fill="#fff"/><path d="' + QR_PATH + '" fill="#000"/></svg>';
+  }
+  var NIVELES = [
+    { n: 1, t: "Registrado", c: "Completa el registro y autoriza el tratamiento de sus datos.", r: "Serie de inicio, primeras microcápsulas y biblioteca técnica." },
+    { n: 2, t: "Aliado", c: "Segunda compra en 60 días, dos trimestres seguidos, con autorización vigente.", r: "Contenido de su serie, boletín mensual y aviso de continuidad (condiciones por definir y publicar)." },
+    { n: 3, t: "Certificado", c: "Aprueba la Ruta Especialista [contenido y duración por confirmar con capacitación].", r: "Sello de Certificado, ficha en el directorio (si lo autoriza) y contenido avanzado." },
+    { n: 4, t: "Aliado VIP", c: "Nivel Certificado más continuidad sostenida y autorización vigente.", r: "Beneficios por confirmar con Haceb: solo se anuncia lo que la operación pueda cumplir.", top: true }
+  ];
+  function viewEscalera() {
+    var li = NIVELES.map(function (x) {
+      return '<li' + (x.top ? ' class="top"' : '') + '><div class="num">' + x.n + '</div><div><b>' + esc(x.t) + '</b>' +
+        '<div class="k">Cómo se llega</div><p>' + esc(x.c) + '</p><div class="k">Qué recibe</div><p>' + esc(x.r) + '</p></div></li>';
+    }).join("");
+    return '<div class="section"><h2>Tu escalera a Aliado VIP</h2><p>Todos los segmentos caminan hacia el mismo destino. Se sube por trayectoria, no por una compra grande.</p></div>' +
+      '<ol class="ladder">' + li + '</ol>' +
+      '<div class="notice warn">Técnicos de cadena: no suben por compras, porque su cadena compra por ellos. Su camino es certificación y soporte técnico, sin puntos ni bonos. Por validar con Haceb.</div>';
+  }
+  function viewQr() {
+    var donde = [
+      ["Mostrador del distribuidor", "Tarjeta o afiche con el QR junto a la caja"],
+      ["Capacitaciones", "QR en la última diapositiva y en la hoja de asistencia"],
+      ["Eventos de la marca", "QR en el stand y en el material entregado"],
+      ["Visita o llamada comercial", "El asesor envía el enlace para que el técnico actualice su autorización"]
+    ].map(function (x) { return "<tr><td>" + esc(x[0]) + "</td><td>" + esc(x[1]) + "</td></tr>"; }).join("");
+    return '<div class="section"><h2>Código QR de registro</h2><p>El primer QR lleva al piloto para técnicos y es el que se reparte. El segundo lleva al panel interno y no se entrega a técnicos.</p></div>' +
+      '<div class="qrgrid"><div class="qrcard"><div class="wm">Aliados <span>Haceb</span></div><div class="q">' + qrSvg() + '</div><div class="go">Escanea y regístrate</div><div class="url">' + esc(QR_URL) + '</div></div>' +
+      '<div class="qrcard" style="margin-top:0"><div class="wm">Panel <span>interno</span></div><div class="q">' + qrSvg2() + '</div><div class="go">Solo para el equipo</div><div class="url">' + esc(QR2_URL) + '</div></div>' +
+      '<div><h3>Dónde se entrega</h3><div class="table-wrap"><table><thead><tr><th>Punto</th><th>Cómo</th></tr></thead><tbody>' + donde + '</tbody></table></div>' +
+      '<div class="legal">Los dos QR apuntan a las páginas publicadas en GitHub. El código del tamaño de una tarjeta se imprime a mínimo 3 cm de lado, en negro sobre blanco, con una zona libre alrededor.</div></div></div>';
+  }
+
+  function pill(v) { return '<span class="pill ' + (v ? "yes" : "no") + '">' + (v ? "Sí" : "No") + '</span>'; }
+  function toCsv() {
+    var head = ["fecha", "nombre", "celular", "ciudad", "tipo", "origen", "consent_datos", "consent_whatsapp", "consent_directorio", "version_texto", "nivel"];
+    var q = function (v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; };
+    return [head.join(",")].concat(S.records.map(function (r) {
+      return [r.ts, r.nombre, r.celular, r.ciudad, tipoNombre(r.tipo), r.origen, r.consentDatos, r.consentWhatsapp, r.consentDirectorio, VERSION_TEXTO, r.nivel].map(q).join(",");
+    })).join("\n");
+  }
+
+  function viewContenido() {
+    var dol = Object.keys(CONTENIDO_DOLOR).map(function (k) {
+      var d = DOLORES.filter(function (x) { return x.id === k; })[0], c = CONTENIDO_DOLOR[k];
+      return "<tr><td>" + esc(d.t) + "</td><td>" + esc(c.titulo) + "</td><td>" + esc(c.formato) + "</td><td>" + esc(c.nota) + "</td></tr>";
+    }).join("");
+    var tem = Object.keys(CONTENIDO_TEMA).map(function (k) {
+      var t = TEMAS.filter(function (x) { return x.id === k; })[0], c = CONTENIDO_TEMA[k];
+      return "<tr><td>" + esc(t.t) + "</td><td>" + esc(c.titulo) + "</td><td>" + esc(c.formato) + "</td></tr>";
+    }).join("");
+    var ser = Object.keys(SERIES).map(function (k) { return "<tr><td>" + esc(tipoNombre(k)) + "</td><td>" + esc(SERIES[k].nombre) + "</td><td>" + esc(SERIES[k].foco) + "</td></tr>"; }).join("");
+    return '<div class="section"><h2>Contenido que se activa con el registro</h2><p>Cada respuesta del formulario decide qué recibe el técnico. Los títulos son propuestas; el contenido técnico y las reglas de garantías los valida Haceb antes de publicar.</p></div>' +
+      '<div class="section"><h3>Serie según cómo trabaja</h3><div class="table-wrap"><table><thead><tr><th>Si es</th><th>Serie</th><th>Foco</th></tr></thead><tbody>' + ser + '</tbody></table></div></div>' +
+      '<div class="section"><h3>Primeras piezas según lo que le hace perder tiempo</h3><div class="table-wrap"><table><thead><tr><th>Si responde</th><th>Recibe</th><th>Formato</th><th>Condición</th></tr></thead><tbody>' + dol + '</tbody></table></div></div>' +
+      '<div class="section"><h3>Pieza del día 14 según el tema elegido</h3><div class="table-wrap"><table><thead><tr><th>Si elige</th><th>Recibe</th><th>Formato</th></tr></thead><tbody>' + tem + '</tbody></table></div></div>' +
+      '<div class="section"><h3>Reglas de envío</h3><div class="table-wrap"><table><thead><tr><th>Regla</th><th>Cómo se aplica</th></tr></thead><tbody>' +
+      '<tr><td>Sin autorización de WhatsApp</td><td>No sale ningún mensaje comercial. El contenido se entrega en el catálogo web y de forma presencial.</td></tr>' +
+      '<tr><td>Horario</td><td>Solo entre semana de 7:00 a. m. a 7:00 p. m., dentro de la franja que eligió el técnico. Legal confirma la regla frente a la Ley 2300 de 2023.</td></tr>' +
+      '<tr><td>Frecuencia</td><td>Propuesta: hasta dos mensajes por semana en total, uno de ellos técnico y útil.</td></tr>' +
+      '<tr><td>Baja</td><td>El técnico responde BAJA y deja de recibir mensajes. La baja se registra el mismo día.</td></tr>' +
+      '<tr><td>Técnico de cadena</td><td>Sin bonos ni puntos; recibe soporte técnico, fichas y garantías.</td></tr>' +
+      '<tr><td>Directorio y casos reales</td><td>Solo con autorización aparte y, para casos reales, por escrito.</td></tr>' +
+      '</tbody></table></div></div>';
+  }
+
+
+  function fin(c) { return evalCli(c); }
+  function viewPanel() {
+    var rs = DATA.map(function (c) { return { c: c, e: evalCli(c) }; });
+    var por = [0, 0, 0, 0, 0]; rs.forEach(function (x) { por[x.e.nivel]++; });
+    var bloqueados = rs.filter(function (x) { var c = x.c; return c.seg !== "S6" && c.compras > 0 && c.pedidos >= 2 && c.trim >= 2 && c.seg60 && !c.aut; }).length;
+    var bonoTotal = rs.reduce(function (a, x) { return a + x.e.bono; }, 0);
+    var segs = ["S1", "S2", "S3", "S4", "S5", "S6"];
+    var matriz = segs.map(function (s) {
+      var f = rs.filter(function (x) { return x.c.seg === s; }), n = [0, 0, 0, 0, 0];
+      f.forEach(function (x) { n[x.e.nivel]++; });
+      return '<tr><td>' + s + ' · ' + esc(SEG_N[s]) + '</td><td>' + f.length + '</td><td>' + n[1] + '</td><td>' + n[2] + '</td><td>' + n[3] + '</td><td>' + n[4] + '</td></tr>';
+    }).join("");
+    var lista = rs.filter(function (x) { return S.seg === "todos" || x.c.seg === S.seg; }).map(function (x) {
+      var c = x.c;
+      return '<tr><td>' + c.ced + '</td><td>' + esc(c.nombre) + '</td><td>' + esc(c.ciudad) + '</td><td>' + esc(TIPO_N[c.tipo]) + '</td><td>' + c.seg + '</td><td>' + (c.compras ? cop(c.compras) : "$0") + '</td><td>' + x.e.nivel + ' · ' + esc(NIV_N[x.e.nivel]) + '</td><td>' + pill(c.aut) + '</td><td>' + (x.e.bono ? cop(x.e.bono) : "—") + '</td></tr>';
+    }).join("");
+    var opts = ['<option value="todos">Todos los segmentos</option>'].concat(segs.map(function (s) { return '<option value="' + s + '"' + (S.seg === s ? " selected" : "") + '>' + s + ' · ' + esc(SEG_N[s]) + '</option>'; })).join("");
+    return '<div class="section"><h2>Clientes y niveles</h2><p>Cruce entre la cédula y la facturación (base ficticia de 60 clientes). El nivel lo calcula el sistema con reglas fijas; el técnico solo ve su propia pantalla en el piloto de clientes.</p></div>' +
+      '<div class="tiles"><div class="tile"><b>' + DATA.length + '</b><span>Clientes en la base de prueba</span></div><div class="tile"><b>' + por[1] + '</b><span>Registrado</span></div><div class="tile"><b>' + por[2] + '</b><span>Aliado</span></div><div class="tile"><b>' + por[3] + '</b><span>Certificado</span></div><div class="tile"><b>' + por[4] + '</b><span>Aliado VIP</span></div></div>' +
+      '<div class="notice warn"><b>' + bloqueados + ' clientes</b> cumplen las condiciones de compra para ser Aliado, pero no suben porque no tienen autorización vigente. Es el primer frente de trabajo: regularizar el consentimiento.</div>' +
+      '<div class="section"><h3>Nivel por segmento</h3><div class="table-wrap"><table><thead><tr><th>Segmento</th><th>Clientes</th><th>Registrado</th><th>Aliado</th><th>Certificado</th><th>VIP</th></tr></thead><tbody>' + matriz + '</tbody></table></div></div>' +
+      '<div class="section"><h3>Clientes</h3><div class="toolbar"><label for="f-seg" class="hint">Filtrar por segmento</label><select id="f-seg" data-seg="1" style="max-width:320px">' + opts + '</select></div><div class="table-wrap"><table><thead><tr><th>Cédula</th><th>Nombre</th><th>Ciudad</th><th>Tipo</th><th>Seg.</th><th>Compras 12 m</th><th>Nivel</th><th>Autoriz.</th><th>Bono estimado</th></tr></thead><tbody>' + lista + '</tbody></table></div><p class="hint" style="margin-top:8px">Bono estimado total de esta muestra: ' + cop(bonoTotal) + ' (si todos redimen).</p></div>';
+  }
+  var COSTO = { s3: 475 * 0.10 * 0.10, s2: 859 * 0.15 * 0.15, s1: 3763 * 0.12 * 0.20, reg: 1303 * 0.1936 * 0.05 };
+  function costo(cre, red) {
+    var cc = (COSTO.s3 + COSTO.s2 + COSTO.s1) * cre / 100 * red / 100, rg = COSTO.reg * red / 100;
+    var inc = (475 * 0.10 + 859 * 0.15 + 3763 * 0.12) * cre / 100;
+    return { crec: cc, reg: rg, tot: cc + rg, inc: inc, margen: inc * 0.35 };
+  }
+  function fm(x) { return x.toFixed(1).replace(".", ","); }
+  function viewBenef() {
+    var b = costo(100, 100), tope = Math.round((145 - b.reg) / (b.crec) * 100);
+    return '<div class="section"><h2>Beneficios por nivel y presupuesto</h2><p>El beneficio es un bono que se entrega en repuesto o herramienta después de comprar. No baja el precio en el mostrador. El porcentaje alto se aplica solo al crecimiento, es decir, a lo que el técnico compra de más frente a sus 12 meses anteriores. Así Haceb paga únicamente cuando vende más, y el bono nunca supera el margen de esa venta adicional.</p></div>' +
+      '<div class="table-wrap"><table><thead><tr><th>Nivel</th><th>Bono</th><th>Se calcula sobre</th><th>Otros beneficios</th><th>Condición</th></tr></thead><tbody>' +
+      '<tr><td>1 · Registrado</td><td>5%</td><td>Su primera compra después de registrarse (tope por definir)</td><td>Contenido de inicio y biblioteca</td><td>Registro con autorización de datos vigente</td></tr>' +
+      '<tr><td>2 · Aliado</td><td>10%</td><td>Crecimiento frente a sus 12 meses anteriores</td><td>Boletín y contenido de su serie</td><td>2.ª compra en 60 días, dos trimestres seguidos, autorización vigente</td></tr>' +
+      '<tr><td>3 · Certificado</td><td>15%</td><td>Crecimiento frente a sus 12 meses anteriores</td><td>Sello, directorio (si autoriza), contenido avanzado</td><td>Aliado, Ruta Especialista aprobada, menos de 25% de pedidos con descuento</td></tr>' +
+      '<tr><td>4 · Aliado VIP</td><td>20%</td><td>Crecimiento frente a sus 12 meses anteriores</td><td>Atención prioritaria, si la operación puede cumplirla</td><td>Certificado y cuatro trimestres seguidos</td></tr>' +
+      '<tr><td>Técnico de cadena</td><td>0%</td><td>No aplica</td><td>Soporte técnico directo y certificación</td><td>No hay bonos: compra la cadena</td></tr></tbody></table></div>' +
+      '<div class="section" style="margin-top:20px"><h3>Cuánto cuesta frente al presupuesto</h3>' +
+      '<p>El caso asigna $145 M al pilar de beneficios y recompra. Con el crecimiento que supone el caso (S1 +12%, S2 +15%, S3 +10%), con S1 en VIP, S2 en Certificado y S3 en Aliado, el bono por crecimiento cuesta <b>$' + fm(b.crec) + ' M</b> y el bono de bienvenida hasta <b>$' + fm(b.reg) + ' M</b>. Total: <b>$' + fm(b.tot) + ' M</b> de $145 M. El pilar aguanta hasta cerca de ' + tope + '% del crecimiento supuesto antes de rebasarse.</p>' +
+      '<div class="calc"><label>% del crecimiento supuesto que se logra<input type="number" min="0" max="300" value="100" data-calc="cre"></label><label>% de bonos que se redimen<input type="number" min="0" max="100" value="100" data-calc="red"></label></div>' +
+      '<div class="out" id="calc-out" aria-live="polite"></div>' +
+      '<p class="hint" style="margin-top:10px">Supuestos: el crecimiento por segmento viene del modelo financiero del caso. El margen bruto del caso no existe; se usa el 35% supuesto. En la hoja de segmentación del caso, S3 aparece en cero; aquí se usa G4 + G9 = $475 M. El bono de bienvenida se calcula con 1.303 compradores sin cadena, el ticket promedio de $194 mil y 5%, como techo. Con el descuento plano de 20% de junio no se puede comparar en pesos porque su costo real no está en el caso.</p></div>' +
+      '<div class="notice warn">Riesgo a vigilar: G4 compra el 86% de sus pedidos con descuento. Al cambiar el descuento plano por un bono, parte de ese grupo puede comprar menos. Por eso el bono se activa en la segunda compra dentro de 60 días y se mide la recompra a 90 días contra el 27% de junio.</div>';
+  }
+  function updCalc() {
+    var g = function (k, mx) { var el = document.querySelector('[data-calc="' + k + '"]'); return Math.max(0, Math.min(mx, parseFloat(el && el.value) || 0)); };
+    var cre = g("cre", 300), red = g("red", 100), out = document.getElementById("calc-out");
+    if (!out) return;
+    var r = costo(cre, red);
+    out.innerHTML = 'Costo estimado: <b>$' + fm(r.tot) + ' M</b> de $145 M (' + Math.round(r.tot / 145 * 100) + '%). Margen bruto de la venta adicional (35% supuesto): <b>$' + fm(r.margen) + ' M</b>.' +
+      (r.tot > 145 ? ' <b>Supera el pilar:</b> se necesitaría un tope por técnico o usar la reserva de $20 M.' : '');
+  }
+  function viewBase() {
+    var rows = DATA.map(function (c) { return '<tr><td>' + c.ced + '</td><td>' + esc(c.nombre) + '</td><td>' + esc(c.ciudad) + '</td><td>' + c.grupo + '</td><td>' + c.seg + '</td><td>' + esc(c.tipo) + '</td><td>' + c.compras + '</td><td>' + c.base + '</td><td>' + c.pedidos + '</td><td>' + Math.round(c.pctDesc * 100) + '%</td><td>' + c.trim + '</td><td>' + (c.seg60 ? "Sí" : "No") + '</td><td>' + (c.ruta ? "Sí" : "No") + '</td><td>' + (c.aut ? "Sí" : "No") + '</td></tr>'; }).join("");
+    return '<div class="section"><h2>Base de facturación (ficticia)</h2><p>Sirve para probar el cruce por cédula. Los nombres y las cédulas (que empiezan por 9) no corresponden a personas reales; las cifras siguen el orden de magnitud de cada grupo del caso. En producción esta base sale del sistema de facturación y el cruce lo hace un servidor, no el navegador.</p></div>' +
+      '<div class="table-wrap"><table><thead><tr><th>Cédula</th><th>Nombre</th><th>Ciudad</th><th>Grupo</th><th>Seg.</th><th>Tipo</th><th>Compras 12 m ($M)</th><th>12 meses anteriores ($M)</th><th>Pedidos</th><th>% con desc.</th><th>Trim. seguidos</th><th>2.ª compra &lt;60 d</th><th>Ruta Especialista</th><th>Autoriz.</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+
+  /* ---------- Render y eventos ---------- */
+  var root = document.getElementById("panel");
+  function render() {
+    var h = S.tab === "panel" ? viewPanel() : S.tab === "benef" ? viewBenef() : S.tab === "base" ? viewBase() : S.tab === "qr" ? viewQr() : viewContenido();
+    root.innerHTML = h;
+    if (S.tab === "benef") updCalc();
+    Array.prototype.forEach.call(document.querySelectorAll("nav.tabs button"), function (b) { b.setAttribute("aria-selected", b.getAttribute("data-tab") === S.tab ? "true" : "false"); });
+  }
+  function validate() {
+    var d = S.d, e = {};
+    if (S.step === 1) {
+      if (d.nombre.trim().length < 3) e.nombre = "Escribe tu nombre completo.";
+      if (!validCel(d.celular)) e.celular = "Escribe un celular de 10 dígitos que empiece por 3.";
+      if (d.ciudad.trim().length < 2) e.ciudad = "Escribe tu ciudad.";
+      if (!d.tipo) e.tipo = "Elige cómo trabajas.";
+    }
+    if (S.step === 4 && !d.consentDatos) e.consent = "Sin esta autorización no podemos completar el registro.";
+    S.errors = e;
+    return Object.keys(e).length === 0;
+  }
+  function finish() {
+    var d = S.d;
+    var rec = {
+      demo: false, ts: now(), nombre: d.nombre.trim(), celular: d.celular.replace(/\D/g, ""), ciudad: d.ciudad.trim(), tipo: d.tipo,
+      origen: d.origen || "Sin dato", consentDatos: d.consentDatos, consentWhatsapp: d.consentWhatsapp, consentDirectorio: d.consentDirectorio,
+      frecuencia: frecNombre(d.frecuencia), nivel: "1 · Registrado", dolores: d.dolores.slice(), temas: d.temas.slice(), experiencia: d.experiencia,
+      horario: d.horario
+    };
+    rec.frecuenciaId = d.frecuencia;
+    S.records.push({ demo: false, ts: rec.ts, nombre: rec.nombre, celular: rec.celular, ciudad: rec.ciudad, tipo: rec.tipo, origen: rec.origen,
+      consentDatos: rec.consentDatos, consentWhatsapp: rec.consentWhatsapp, consentDirectorio: rec.consentDirectorio, frecuencia: d.frecuencia,
+      nivel: rec.nivel, dolores: rec.dolores, temas: rec.temas, experiencia: rec.experiencia });
+    S.last = { tipo: d.tipo, nombre: d.nombre.trim(), consentWhatsapp: d.consentWhatsapp, dolores: d.dolores.slice(), temas: d.temas.slice(), frecuencia: d.frecuencia, experiencia: d.experiencia, horario: d.horario };
+    S.step = 5;
+  }
+  root.addEventListener("click", function (ev) {
+    var t = ev.target.closest("[data-chip],[data-go]");
+    if (!t) return;
+    var chip = t.getAttribute("data-chip");
+    if (chip) {
+      var val = t.getAttribute("data-val"), multi = t.getAttribute("data-multi") === "1";
+      if (multi) {
+        if (chip === "dolores" && S.d.dolores.indexOf(val) < 0 && S.d.dolores.length >= 2) return;
+        toggle(S.d[chip], val);
+      } else { S.d[chip] = S.d[chip] === val ? "" : val; }
+      S.errors = {}; render(); return;
+    }
+    var go = t.getAttribute("data-go");
+    if (go === "next") {
+      if (!validate()) { render(); return; }
+      if (S.step === 4) finish(); else S.step++;
+      render(); window.scrollTo(0, 0);
+    } else if (go === "back") { S.errors = {}; S.step = Math.max(0, S.step - 1); render(); window.scrollTo(0, 0); }
+    else if (go === "again") { S.d = blank(); S.step = 0; S.errors = {}; render(); window.scrollTo(0, 0); }
+    else if (go === "escalera") { S.tab = "escalera"; render(); window.scrollTo(0, 0); }
+    else if (go === "csv") {
+      var text = toCsv();
+      try { navigator.clipboard.writeText(text).catch(function () {}); } catch (e) {}
+      S.csv = true; render();
+    }
+  });
+  root.addEventListener("input", function (ev) {
+    if (ev.target.getAttribute("data-calc")) { updCalc(); return; }
+    var f = ev.target.getAttribute("data-in");
+    if (f) S.d[f] = ev.target.value;
+  });
+  root.addEventListener("change", function (ev) {
+    if (ev.target.getAttribute("data-seg")) { S.seg = ev.target.value; render(); return; }
+    var c = ev.target.getAttribute("data-chk");
+    if (c) { S.d[c] = ev.target.checked; S.errors = {}; render(); }
+  });
+  document.querySelector("nav.tabs").addEventListener("click", function (ev) {
+    var b = ev.target.closest("button[data-tab]");
+    if (!b) return;
+    S.tab = b.getAttribute("data-tab"); render(); window.scrollTo(0, 0);
+  });
+  render();
+})();
+</script>
+</body>
+</html>
